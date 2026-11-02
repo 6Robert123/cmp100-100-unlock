@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-02",
+  "mode": "--apply",
+  "rc": 0,
+  "script_sha256": "e62fc39fd6a8eb45b22e7c72d6481334f4ba8dcc9e34dd460a52d1e82e7015ad",
+  "kernel": "7.0.0-38-generic",
+  "driver": "580.178.04",
+  "glibc": "2.39",
+  "same_boot": true,
+  "before": [
+    {
+      "bdf": "00000000:01:00.0",
+      "memory_mib": 6144,
+      "used_mib": 4,
+      "temperature_c": 35,
+      "driver": "580.178.04"
+    },
+    {
+      "bdf": "00000000:02:00.0",
+      "memory_mib": 6144,
+      "used_mib": 4,
+      "temperature_c": 34,
+      "driver": "580.178.04"
+    }
+  ],
+  "after": [
+    {
+      "bdf": "00000000:01:00.0",
+      "memory_mib": 12288,
+      "used_mib": 0,
+      "temperature_c": 35,
+      "driver": "580.178.04"
+    },
+    {
+      "bdf": "00000000:02:00.0",
+      "memory_mib": 12288,
+      "used_mib": 0,
+      "temperature_c": 34,
+      "driver": "580.178.04"
+    }
+  ],
+  "final_settings": [
+    {
+      "bdf": "0000:01:00.0",
+      "driver": "nvidia",
+      "override": "(null)",
+      "reset_method": "bus"
+    },
+    {
+      "bdf": "0000:02:00.0",
+      "driver": "nvidia",
+      "override": "(null)",
+      "reset_method": "bus"
+    }
+  ],
+  "restored_services": [
+    "graphical login",
+    "NVIDIA persistence",
+    "adaptive fan controller"
+  ],
+  "legacy_initializer": "disabled/inactive; not changed",
+  "initial_attempt": {
+    "script_sha256": "8e90452c92b157dd04dba3f3eebc946edcbd24fcb6c670a272cc778d2083d9cf",
+    "rc": 1,
+    "cause": "/run mounted noexec; helper execution denied after first target reset",
+    "recovery": "ordinary NVIDIA bind restored first target at 6144 MiB; second target untouched"
+  },
+  "limitations": [
+    "Only two CMPs, no non-target NVIDIA adapter in this host.",
+    "Hot apply only; cold boot and installer not hardware-tested.",
+    "No CUDA allocation/stress test in this trial.",
+    "PCIe remains Gen1 x1.",
+    "One successful revised apply; not a repeatability study."
+  ],
+  "release_script_sha256": "557e9a411056c41184fb04c68542a2b275b42c67680f4cb4636cded7c6f222a0",
+  "post_trial_change": {
+    "scope": "Only argparse --help description text changed; all remaining script bytes, including helper payload, are unchanged. No new hardware run.",
+    "tested_script_sha256": "e62fc39fd6a8eb45b22e7c72d6481334f4ba8dcc9e34dd460a52d1e82e7015ad",
+    "release_script_sha256": "557e9a411056c41184fb04c68542a2b275b42c67680f4cb4636cded7c6f222a0"
+  }
+}

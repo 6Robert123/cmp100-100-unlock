@@ -1,0 +1,32 @@
+## time
+2026-11-01T07:15:55+11:00
+## boot
+UUID-REDACTED
+## aer/link for cmps
+--- 01:00.0
+		DevSta:	CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+		LnkSta:	Speed 2.5GT/s, Width x1
+		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+		AERCap:	First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
+--- 02:00.0
+		DevSta:	CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+		LnkSta:	Speed 2.5GT/s, Width x1
+		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+		AERCap:	First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
+--- 03:00.0
+		DevSta:	CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+		LnkSta:	Speed 2.5GT/s, Width x1
+		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+		AERCap:	First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
+## dmesg xid/aer tail
+[    0.655987] acpi PNP0A08:00: _OSC: platform does not support [PCIeHotplug SHPCHotplug PME AER LTR DPC]
+[    0.664276] acpi PNP0A03:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME AER PCIeCapability LTR DPC]
+## registers
+{"bar0_size": 16777216, "bdf": "0000:02:00.0", "values": {"0x88084": "00453c11", "0x88088": "10110140", "0x880a4": "00000002", "0x8841c": "c0b46500", "0x8872c": "00000000", "0x88ab4": "0000008f", "0x8b8c0": "00640003", "0x8c040": "08089000", "0x8c1c0": "00210036", "0x8c2c0": "068711b3"}}
+{"bar0_size": 16777216, "bdf": "0000:03:00.0", "values": {"0x88084": "00453c11", "0x88088": "10110140", "0x880a4": "00000002", "0x8841c": "c0b46500", "0x8872c": "00000000", "0x88ab4": "0000008f", "0x8b8c0": "00640003", "0x8c040": "08089000", "0x8c1c0": "00210036", "0x8c2c0": "068711b3"}}

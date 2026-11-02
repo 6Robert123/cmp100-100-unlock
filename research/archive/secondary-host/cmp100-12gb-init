@@ -1,0 +1,100 @@
+#!/bin/bash
+# Adapted from the working RESEARCH-HOST service; require every card to pass.
+set -Eeuo pipefail
+HELPER=/usr/local/libexec/gp100_cfg1_race
+TARGET=0x02669000
+fail() { echo "CMP100_12GB_FAIL: $*" >&2; exit 1; }
+[[ $EUID == 0 ]] || fail 'root required'
+[[ -x "$HELPER" ]] || fail "missing $HELPER"
+[[ ! -d /sys/module/nouveau ]] ||
+    fail 'nouveau is loaded; a clean boot with nouveau blacklisted is required'
+exec 9>/run/cmp100-12gb.lock
+flock -n 9 || fail 'another initialization is running'
+mapfile -t BDFS < <(lspci -Dn | awk '/10de:15c2/ {print $1}')
+[[ ${#BDFS[@]} -gt 0 ]] || fail 'no CMP100 devices'
+echo "CMP100_12GB_CARDS=${BDFS[*]}"
+
+# These devices expose bus reset only. Refuse to reset a shared bridge.
+for BDF in "${BDFS[@]}"; do
+    DEV=/sys/bus/pci/devices/$BDF
+    [[ -w "$DEV/reset" ]] || fail "no usable reset for $BDF"
+    parent=$(dirname "$(readlink -f "$DEV")")
+    for sibling in "$parent"/????:??:??.?; do
+        [[ ! -e "$sibling" || ${sibling##*/} == "$BDF" ]] ||
+            fail "shared reset bridge: $BDF and ${sibling##*/}"
+    done
+    for node in "$DEV"/drm/card[0-9]* "$DEV"/drm/renderD[0-9]*; do
+        [[ -d "$node" ]] || continue
+        name=${node##*/}
+        [[ "$name" =~ ^(card|renderD)[0-9]+$ ]] || continue
+        if fuser "/dev/dri/$name" >/dev/null 2>&1; then
+            fail "GPU consumers still use /dev/dri/$name"
+        fi
+    done
+done
+if fuser /dev/nvidia* >/dev/null 2>&1; then
+    fail 'NVIDIA consumers still active'
+fi
+
+for BDF in "${BDFS[@]}"; do
+    DEV=/sys/bus/pci/devices/$BDF
+    if [[ -L "$DEV/driver" ]]; then
+        echo "$BDF" > "$DEV/driver/unbind"
+    fi
+done
+modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia 2>/dev/null || true
+modprobe -r nouveau 2>/dev/null || true
+[[ ! -d /sys/module/nouveau && ! -d /sys/module/nvidia ]] ||
+    fail 'GPU driver could not be unloaded'
+
+LOGDIR=$(mktemp -d /var/log/cmp100-12gb.XXXXXX)
+echo "LOGDIR=$LOGDIR"
+watcher=''
+cleanup() {
+    if [[ -n "$watcher" ]]; then
+        kill "$watcher" 2>/dev/null || true
+        wait "$watcher" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT
+
+for BDF in "${BDFS[@]}"; do
+    DEV=/sys/bus/pci/devices/$BDF
+    echo "==== INIT $BDF ===="
+    if [[ -L "$DEV/driver" ]]; then
+        echo "$BDF" > "$DEV/driver/unbind"
+    fi
+    modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia 2>/dev/null || true
+    [[ ! -d /sys/module/nvidia ]] || fail 'NVIDIA still loaded'
+    echo 1 > "$DEV/reset"
+    sleep 0.15
+    setpci -s "$BDF" COMMAND=0x0002
+    log="$LOGDIR/$BDF.log"
+    timeout 20 "$HELPER" "$BDF" "$TARGET" > "$log" 2>&1 &
+    watcher=$!
+    sleep 0.25
+    modprobe nvidia
+    if wait "$watcher"; then watcher=''; else
+        watcher=''
+        cat "$log"
+        fail "watcher failed for $BDF"
+    fi
+    cat "$log"
+    grep -q 'HIT_NS=' "$log" || fail "no initialization interception for $BDF"
+    # An SMI query opens the GPU and completes RM initialization.
+    nvidia-smi --query-gpu=pci.bus_id,memory.total --format=csv,noheader,nounits
+done
+
+# The final all-card snapshot is authoritative: a later reload could change an
+# earlier card, so per-iteration success alone must not count as overall success.
+snapshot=$(nvidia-smi --query-gpu=pci.bus_id,memory.total --format=csv,noheader,nounits)
+printf '%s\n' "$snapshot"
+for BDF in "${BDFS[@]}"; do
+    mem=$(awk -F, -v target="$BDF" '{
+        gsub(/ /, "", $1); gsub(/ /, "", $2);
+        sub(/^00000000:/, "0000:", $1);
+        if (tolower($1) == tolower(target)) print $2;
+    }' <<< "$snapshot")
+    [[ "$mem" == 12288 ]] || fail "$BDF final memory=${mem:-missing}"
+done
+echo "CMP100_12GB_READY COUNT=${#BDFS[@]}"

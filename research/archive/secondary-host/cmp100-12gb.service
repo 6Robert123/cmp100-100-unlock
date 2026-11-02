@@ -1,0 +1,14 @@
+[Unit]
+Description=Initialize every CMP100 with the validated 12 GiB HBM profile
+Requires=atlas-full-fans.service
+After=systemd-udev-settle.service atlas-full-fans.service
+Before=display-manager.service nvidia-persistenced.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/cmp100-12gb-init
+RemainAfterExit=yes
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

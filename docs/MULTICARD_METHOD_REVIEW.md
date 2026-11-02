@@ -1,0 +1,11 @@
+# Historical working service versus the public multi-card candidate
+
+The original service did work. [Boot receipt](../research/legacy_boot_receipt.json), [mixed-host health](../research/legacy_mixed_health.json). Archived October 30 postboot output includes `ARMED`, `HIT_NS`, and `CHECK ... mem=12288` for three CMPs, then `CMP100_12GB_OK_COUNT=3 / 3` and a separate final capacity gate. Earlier October 22 repair evidence records two CMPs at 12 GiB together with a P100 at 16 GiB. These establish successful historical configurations; they do not prove arbitrary-card compatibility or the absence of transient shared-driver effects.
+
+The original shell selected only PCI `10de:15c2` for explicit per-BDF reset/helper. Its `modprobe -r ... || true` was global and failures were ignored. Linux module unload may also detach other idle devices; a bound device alone is not a universal proof that unload must fail. Conversely active users/dependencies can prevent unloading. Therefore neither “P100 was explicitly reset” nor “P100 could not have been affected by driver lifecycle” follows from that shell alone. The wrapper also accepted one-card success; retained full boot logs are stronger because all three actually passed.
+
+The public candidate keeps the common NVIDIA core loaded, resets/binds only selected CMPs, and validates all selected capacities. Hot mode preserves non-target bindings. Cold boot may load the driver once and allow normal registration of previously unbound NVIDIA devices; it then records their bindings as protected. It does not send those devices reset/helper/sysfs writes.
+
+The archived V3 recovery proposal supplied a useful explicit-probe/target-NVML design, but its executed first-core-load attempt failed with ENODEV before completion. It is not a successful reference implementation. The public candidate avoids V3's all-HOLD first-load setup: it loads the core normally if needed, then handles each CMP explicitly under the loaded driver. That difference was initially fixture-tested; the subsequent [two-CMP hot trial](../validation/hardware_20261102/README.md) passed, while cold registration remains hardware-unvalidated.
+
+The authorized 2 November hot trial is now recorded with exact hashes and logs in the linked report. Mixed NVIDIA hosts and cold boot remain future validation work. Research Gen2/x16 remains separate.

@@ -1,0 +1,14 @@
+[Unit]
+Description=Initialize NVIDIA CMP 100-100 with its physical 12 GiB HBM2 profile
+After=systemd-udev-settle.service
+Before=display-manager.service multi-user.target
+# ConditionPathExists снят: адрес карты определяется автоматически
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/cmp100-12gb-init
+RemainAfterExit=yes
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+*.rom
+*.bin
+*.key
+*.pem
+.env
+.env.*
+logs/
+run-logs/

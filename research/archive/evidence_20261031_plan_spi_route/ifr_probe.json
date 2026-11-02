@@ -1,0 +1,128 @@
+{
+ "CMP01_(3e25541f)": {
+  "sha256": "3e25541f9af0c536b681755761e130ce84016debe0317815bddfd7de36d881a2",
+  "ifr_end": "0x840",
+  "records": [
+   {
+    "offset": "0xac",
+    "address": "0x88084",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0xfffffc0f",
+     "0x10"
+    ],
+    "raw": "868008820ffcffff10000000"
+   },
+   {
+    "offset": "0xc0",
+    "address": "0x8841c",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0x3fff9fff",
+     "0xc0006000"
+    ],
+    "raw": "1e840882ff9fff3f006000c0"
+   },
+   {
+    "offset": "0x1ec",
+    "address": "0x8c040",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0x7ffffff",
+     "0x8000000"
+    ],
+    "raw": "42c00882ffffff0700000008"
+   }
+  ]
+ },
+ "CMP03_(8ae75ee4)": {
+  "sha256": "8ae75ee4d1fc28e7c5e42982d16f726f40017b731ac046474e5207e82bb406ba",
+  "ifr_end": "0x840",
+  "records": [
+   {
+    "offset": "0xac",
+    "address": "0x88084",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0xfffffc0f",
+     "0x10"
+    ],
+    "raw": "868008820ffcffff10000000"
+   },
+   {
+    "offset": "0xc0",
+    "address": "0x8841c",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0x3fff9fff",
+     "0xc0006000"
+    ],
+    "raw": "1e840882ff9fff3f006000c0"
+   },
+   {
+    "offset": "0x1ec",
+    "address": "0x8c040",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0x7ffffff",
+     "0x8000000"
+    ],
+    "raw": "42c00882ffffff0700000008"
+   }
+  ]
+ },
+ "P100_(e687e66c)": {
+  "sha256": "e687e66ca234663acfa94b013b5ed7169d261c81e096d9feb5bc1461457cde34",
+  "ifr_end": "0x834",
+  "records": [
+   {
+    "offset": "0xac",
+    "address": "0x88084",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0xfffff3ff",
+     "0x0"
+    ],
+    "raw": "86800882fff3ffff00000000"
+   },
+   {
+    "offset": "0xc0",
+    "address": "0x8841c",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0xffffffff",
+     "0x0"
+    ],
+    "raw": "1e840882ffffffff00000000"
+   },
+   {
+    "offset": "0x1ec",
+    "address": "0x8c040",
+    "type": "0x82",
+    "payload_word_count": 2,
+    "address_flags": 2,
+    "operands": [
+     "0xffffffff",
+     "0x0"
+    ],
+    "raw": "42c00882ffffffff00000000"
+   }
+  ]
+ }
+}

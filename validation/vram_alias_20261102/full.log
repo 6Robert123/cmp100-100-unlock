@@ -1,0 +1,199 @@
+START 2026-11-02T05:58:50+11:00
+---LNK---
+		LnkSta:	Speed 2.5GT/s, Width x1
+		LnkSta:	Speed 2.5GT/s, Width x1
+=== FULL 01:00.0 ===
+CUDA_TOTAL_MIB=12186 CUDA_FREE_MIB=11960
+ALLOC_MIB=11264 SEGMENTS=44 SEGMENT_MIB=256
+PASS_PROGRESS pass=1 segment=1/44 failures=0
+PASS_PROGRESS pass=1 segment=2/44 failures=0
+PASS_PROGRESS pass=1 segment=3/44 failures=0
+PASS_PROGRESS pass=1 segment=4/44 failures=0
+PASS_PROGRESS pass=1 segment=5/44 failures=0
+PASS_PROGRESS pass=1 segment=6/44 failures=0
+PASS_PROGRESS pass=1 segment=7/44 failures=0
+PASS_PROGRESS pass=1 segment=8/44 failures=0
+PASS_PROGRESS pass=1 segment=9/44 failures=0
+PASS_PROGRESS pass=1 segment=10/44 failures=0
+PASS_PROGRESS pass=1 segment=11/44 failures=0
+PASS_PROGRESS pass=1 segment=12/44 failures=0
+PASS_PROGRESS pass=1 segment=13/44 failures=0
+PASS_PROGRESS pass=1 segment=14/44 failures=0
+PASS_PROGRESS pass=1 segment=15/44 failures=0
+PASS_PROGRESS pass=1 segment=16/44 failures=0
+PASS_PROGRESS pass=1 segment=17/44 failures=0
+PASS_PROGRESS pass=1 segment=18/44 failures=0
+PASS_PROGRESS pass=1 segment=19/44 failures=0
+PASS_PROGRESS pass=1 segment=20/44 failures=0
+PASS_PROGRESS pass=1 segment=21/44 failures=0
+PASS_PROGRESS pass=1 segment=22/44 failures=0
+PASS_PROGRESS pass=1 segment=23/44 failures=0
+PASS_PROGRESS pass=1 segment=24/44 failures=0
+PASS_PROGRESS pass=1 segment=25/44 failures=0
+PASS_PROGRESS pass=1 segment=26/44 failures=0
+PASS_PROGRESS pass=1 segment=27/44 failures=0
+PASS_PROGRESS pass=1 segment=28/44 failures=0
+PASS_PROGRESS pass=1 segment=29/44 failures=0
+PASS_PROGRESS pass=1 segment=30/44 failures=0
+PASS_PROGRESS pass=1 segment=31/44 failures=0
+PASS_PROGRESS pass=1 segment=32/44 failures=0
+PASS_PROGRESS pass=1 segment=33/44 failures=0
+PASS_PROGRESS pass=1 segment=34/44 failures=0
+PASS_PROGRESS pass=1 segment=35/44 failures=0
+PASS_PROGRESS pass=1 segment=36/44 failures=0
+PASS_PROGRESS pass=1 segment=37/44 failures=0
+PASS_PROGRESS pass=1 segment=38/44 failures=0
+PASS_PROGRESS pass=1 segment=39/44 failures=0
+PASS_PROGRESS pass=1 segment=40/44 failures=0
+PASS_PROGRESS pass=1 segment=41/44 failures=0
+PASS_PROGRESS pass=1 segment=42/44 failures=0
+PASS_PROGRESS pass=1 segment=43/44 failures=0
+PASS_PROGRESS pass=1 segment=44/44 failures=0
+PASS_PROGRESS pass=2 segment=1/44 failures=0
+PASS_PROGRESS pass=2 segment=2/44 failures=0
+PASS_PROGRESS pass=2 segment=3/44 failures=0
+PASS_PROGRESS pass=2 segment=4/44 failures=0
+PASS_PROGRESS pass=2 segment=5/44 failures=0
+PASS_PROGRESS pass=2 segment=6/44 failures=0
+PASS_PROGRESS pass=2 segment=7/44 failures=0
+PASS_PROGRESS pass=2 segment=8/44 failures=0
+PASS_PROGRESS pass=2 segment=9/44 failures=0
+PASS_PROGRESS pass=2 segment=10/44 failures=0
+PASS_PROGRESS pass=2 segment=11/44 failures=0
+PASS_PROGRESS pass=2 segment=12/44 failures=0
+PASS_PROGRESS pass=2 segment=13/44 failures=0
+PASS_PROGRESS pass=2 segment=14/44 failures=0
+PASS_PROGRESS pass=2 segment=15/44 failures=0
+PASS_PROGRESS pass=2 segment=16/44 failures=0
+PASS_PROGRESS pass=2 segment=17/44 failures=0
+PASS_PROGRESS pass=2 segment=18/44 failures=0
+PASS_PROGRESS pass=2 segment=19/44 failures=0
+PASS_PROGRESS pass=2 segment=20/44 failures=0
+PASS_PROGRESS pass=2 segment=21/44 failures=0
+PASS_PROGRESS pass=2 segment=22/44 failures=0
+PASS_PROGRESS pass=2 segment=23/44 failures=0
+PASS_PROGRESS pass=2 segment=24/44 failures=0
+PASS_PROGRESS pass=2 segment=25/44 failures=0
+PASS_PROGRESS pass=2 segment=26/44 failures=0
+PASS_PROGRESS pass=2 segment=27/44 failures=0
+PASS_PROGRESS pass=2 segment=28/44 failures=0
+PASS_PROGRESS pass=2 segment=29/44 failures=0
+PASS_PROGRESS pass=2 segment=30/44 failures=0
+PASS_PROGRESS pass=2 segment=31/44 failures=0
+PASS_PROGRESS pass=2 segment=32/44 failures=0
+PASS_PROGRESS pass=2 segment=33/44 failures=0
+PASS_PROGRESS pass=2 segment=34/44 failures=0
+PASS_PROGRESS pass=2 segment=35/44 failures=0
+PASS_PROGRESS pass=2 segment=36/44 failures=0
+PASS_PROGRESS pass=2 segment=37/44 failures=0
+PASS_PROGRESS pass=2 segment=38/44 failures=0
+PASS_PROGRESS pass=2 segment=39/44 failures=0
+PASS_PROGRESS pass=2 segment=40/44 failures=0
+PASS_PROGRESS pass=2 segment=41/44 failures=0
+PASS_PROGRESS pass=2 segment=42/44 failures=0
+PASS_PROGRESS pass=2 segment=43/44 failures=0
+PASS_PROGRESS pass=2 segment=44/44 failures=0
+RESULT=PASS_FULL FAILURES=0 TESTED_MIB=11264
+rc0:0
+index, pci.bus_id, temperature.gpu, power.draw [W], memory.used [MiB]
+0, 00000000:01:00.0, 49, 41.39 W, 0 MiB
+1, 00000000:03:00.0, 40, 23.15 W, 0 MiB
+=== FULL 03:00.0 ===
+CUDA_TOTAL_MIB=12186 CUDA_FREE_MIB=11960
+ALLOC_MIB=11264 SEGMENTS=44 SEGMENT_MIB=256
+PASS_PROGRESS pass=1 segment=1/44 failures=0
+PASS_PROGRESS pass=1 segment=2/44 failures=0
+PASS_PROGRESS pass=1 segment=3/44 failures=0
+PASS_PROGRESS pass=1 segment=4/44 failures=0
+PASS_PROGRESS pass=1 segment=5/44 failures=0
+PASS_PROGRESS pass=1 segment=6/44 failures=0
+PASS_PROGRESS pass=1 segment=7/44 failures=0
+PASS_PROGRESS pass=1 segment=8/44 failures=0
+PASS_PROGRESS pass=1 segment=9/44 failures=0
+PASS_PROGRESS pass=1 segment=10/44 failures=0
+PASS_PROGRESS pass=1 segment=11/44 failures=0
+PASS_PROGRESS pass=1 segment=12/44 failures=0
+PASS_PROGRESS pass=1 segment=13/44 failures=0
+PASS_PROGRESS pass=1 segment=14/44 failures=0
+PASS_PROGRESS pass=1 segment=15/44 failures=0
+PASS_PROGRESS pass=1 segment=16/44 failures=0
+PASS_PROGRESS pass=1 segment=17/44 failures=0
+PASS_PROGRESS pass=1 segment=18/44 failures=0
+PASS_PROGRESS pass=1 segment=19/44 failures=0
+PASS_PROGRESS pass=1 segment=20/44 failures=0
+PASS_PROGRESS pass=1 segment=21/44 failures=0
+PASS_PROGRESS pass=1 segment=22/44 failures=0
+PASS_PROGRESS pass=1 segment=23/44 failures=0
+PASS_PROGRESS pass=1 segment=24/44 failures=0
+PASS_PROGRESS pass=1 segment=25/44 failures=0
+PASS_PROGRESS pass=1 segment=26/44 failures=0
+PASS_PROGRESS pass=1 segment=27/44 failures=0
+PASS_PROGRESS pass=1 segment=28/44 failures=0
+PASS_PROGRESS pass=1 segment=29/44 failures=0
+PASS_PROGRESS pass=1 segment=30/44 failures=0
+PASS_PROGRESS pass=1 segment=31/44 failures=0
+PASS_PROGRESS pass=1 segment=32/44 failures=0
+PASS_PROGRESS pass=1 segment=33/44 failures=0
+PASS_PROGRESS pass=1 segment=34/44 failures=0
+PASS_PROGRESS pass=1 segment=35/44 failures=0
+PASS_PROGRESS pass=1 segment=36/44 failures=0
+PASS_PROGRESS pass=1 segment=37/44 failures=0
+PASS_PROGRESS pass=1 segment=38/44 failures=0
+PASS_PROGRESS pass=1 segment=39/44 failures=0
+PASS_PROGRESS pass=1 segment=40/44 failures=0
+PASS_PROGRESS pass=1 segment=41/44 failures=0
+PASS_PROGRESS pass=1 segment=42/44 failures=0
+PASS_PROGRESS pass=1 segment=43/44 failures=0
+PASS_PROGRESS pass=1 segment=44/44 failures=0
+PASS_PROGRESS pass=2 segment=1/44 failures=0
+PASS_PROGRESS pass=2 segment=2/44 failures=0
+PASS_PROGRESS pass=2 segment=3/44 failures=0
+PASS_PROGRESS pass=2 segment=4/44 failures=0
+PASS_PROGRESS pass=2 segment=5/44 failures=0
+PASS_PROGRESS pass=2 segment=6/44 failures=0
+PASS_PROGRESS pass=2 segment=7/44 failures=0
+PASS_PROGRESS pass=2 segment=8/44 failures=0
+PASS_PROGRESS pass=2 segment=9/44 failures=0
+PASS_PROGRESS pass=2 segment=10/44 failures=0
+PASS_PROGRESS pass=2 segment=11/44 failures=0
+PASS_PROGRESS pass=2 segment=12/44 failures=0
+PASS_PROGRESS pass=2 segment=13/44 failures=0
+PASS_PROGRESS pass=2 segment=14/44 failures=0
+PASS_PROGRESS pass=2 segment=15/44 failures=0
+PASS_PROGRESS pass=2 segment=16/44 failures=0
+PASS_PROGRESS pass=2 segment=17/44 failures=0
+PASS_PROGRESS pass=2 segment=18/44 failures=0
+PASS_PROGRESS pass=2 segment=19/44 failures=0
+PASS_PROGRESS pass=2 segment=20/44 failures=0
+PASS_PROGRESS pass=2 segment=21/44 failures=0
+PASS_PROGRESS pass=2 segment=22/44 failures=0
+PASS_PROGRESS pass=2 segment=23/44 failures=0
+PASS_PROGRESS pass=2 segment=24/44 failures=0
+PASS_PROGRESS pass=2 segment=25/44 failures=0
+PASS_PROGRESS pass=2 segment=26/44 failures=0
+PASS_PROGRESS pass=2 segment=27/44 failures=0
+PASS_PROGRESS pass=2 segment=28/44 failures=0
+PASS_PROGRESS pass=2 segment=29/44 failures=0
+PASS_PROGRESS pass=2 segment=30/44 failures=0
+PASS_PROGRESS pass=2 segment=31/44 failures=0
+PASS_PROGRESS pass=2 segment=32/44 failures=0
+PASS_PROGRESS pass=2 segment=33/44 failures=0
+PASS_PROGRESS pass=2 segment=34/44 failures=0
+PASS_PROGRESS pass=2 segment=35/44 failures=0
+PASS_PROGRESS pass=2 segment=36/44 failures=0
+PASS_PROGRESS pass=2 segment=37/44 failures=0
+PASS_PROGRESS pass=2 segment=38/44 failures=0
+PASS_PROGRESS pass=2 segment=39/44 failures=0
+PASS_PROGRESS pass=2 segment=40/44 failures=0
+PASS_PROGRESS pass=2 segment=41/44 failures=0
+PASS_PROGRESS pass=2 segment=42/44 failures=0
+PASS_PROGRESS pass=2 segment=43/44 failures=0
+PASS_PROGRESS pass=2 segment=44/44 failures=0
+RESULT=PASS_FULL FAILURES=0 TESTED_MIB=11264
+rc1:0
+index, pci.bus_id, temperature.gpu, power.draw [W], memory.used [MiB]
+0, 00000000:01:00.0, 51, 41.88 W, 0 MiB
+1, 00000000:03:00.0, 41, 23.40 W, 0 MiB
+---XID---
+END 2026-11-02T06:02:44+11:00
+REBIND_DONE

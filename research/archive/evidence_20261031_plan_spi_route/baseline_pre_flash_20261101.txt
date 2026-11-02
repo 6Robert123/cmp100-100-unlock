@@ -1,0 +1,30 @@
+# pre-flash baseline
+2026-11-01T06:34:58+11:00
+RESEARCH-HOST
+UUID-REDACTED
+7.0.0-30-generic
+## gpus
+index, name, uuid, pci.bus_id, vbios_version, pcie.link.gen.max, pcie.link.gen.current, pcie.link.width.max, pcie.link.width.current, memory.total [MiB], temperature.gpu, power.draw [W]
+0, NVIDIA CMP 100-100, GPU-REDACTED, 00000000:01:00.0, 86.00.50.00.01, 1, 1, 1, 1, 12288 MiB, 42, 24.09 W
+1, NVIDIA CMP 100-100, GPU-REDACTED, 00000000:02:00.0, 86.00.50.00.01, 1, 1, 1, 1, 12288 MiB, 41, 25.77 W
+2, NVIDIA CMP 100-100, GPU-REDACTED, 00000000:03:00.0, 86.00.50.00.01, 1, 1, 1, 1, 12288 MiB, 39, 23.11 W
+## endpoint link caps (sysfs)
+0000:01:00.0 max_link_speed=2.5 GT/s PCIe max_link_width=1 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+0000:02:00.0 max_link_speed=2.5 GT/s PCIe max_link_width=1 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+0000:03:00.0 max_link_speed=2.5 GT/s PCIe max_link_width=1 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+## root ports
+0000:00:01.0 max_link_speed=8.0 GT/s PCIe max_link_width=8 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+0000:00:02.0 max_link_speed=8.0 GT/s PCIe max_link_width=16 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+0000:00:03.0 max_link_speed=8.0 GT/s PCIe max_link_width=16 current_link_speed=2.5 GT/s PCIe current_link_width=1 
+## LnkCap via setpci
+01:00.0 LnkCap=00453c11
+ LnkCap2=0002
+ LnkSta=1011
+02:00.0 LnkCap=00453c11
+ LnkCap2=0002
+ LnkSta=1011
+03:00.0 LnkCap=00453c11
+ LnkCap2=0002
+ LnkSta=1011
+## errors
+2

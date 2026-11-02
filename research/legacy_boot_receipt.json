@@ -1,0 +1,64 @@
+{
+  "scope": "Historical global-unload/reload initializer, not the new per-device implementation",
+  "source": "evidence_20261030_cmp02_x16/native_mods_runtime_selection/native_baseline_execution_03/run02/reboot_execution_01/postboot_result.txt",
+  "source_sha256": "df59a44e0e369debf85a0f15d04fbfb847f4d4f82985559713d5f246e757d42f",
+  "redaction": "Journal hostname/timestamp/PID prefixes omitted; GPU identities omitted; line numbers preserved",
+  "excerpt": [
+    {
+      "source_line": 102,
+      "payload": "CMP100_12GB_CARDS=0000:01:00.0 0000:02:00.0 0000:03:00.0"
+    },
+    {
+      "source_line": 103,
+      "payload": "==== INIT 0000:01:00.0 ===="
+    },
+    {
+      "source_line": 104,
+      "payload": "ARMED trigger=0x02559000 target=0x02669000 OPT_FBIO=0x000000f0 active=0,1,2,3,8,9,10,11,12,13,14,15"
+    },
+    {
+      "source_line": 105,
+      "payload": "HIT_NS=7196112972 DELTA_US=1971379 READBACK=0x02669000 CSTATUS=0x00000400 LMR=0x00000308 DEVINIT=0x00000002 REWRITES=8 OPT_FBIO=0x000000f0"
+    },
+    {
+      "source_line": 119,
+      "payload": "CHECK 0000:01:00.0 mem=12288"
+    },
+    {
+      "source_line": 120,
+      "payload": "==== INIT 0000:02:00.0 ===="
+    },
+    {
+      "source_line": 121,
+      "payload": "ARMED trigger=0x02559000 target=0x02669000 OPT_FBIO=0x0000000f active=4,5,6,7,8,9,10,11,12,13,14,15"
+    },
+    {
+      "source_line": 122,
+      "payload": "HIT_NS=12532592283 DELTA_US=2064247 READBACK=0x02669000 CSTATUS=0x00000400 LMR=0x00000308 DEVINIT=0x00000002 REWRITES=0 OPT_FBIO=0x0000000f"
+    },
+    {
+      "source_line": 136,
+      "payload": "CHECK 0000:02:00.0 mem=12288"
+    },
+    {
+      "source_line": 137,
+      "payload": "==== INIT 0000:03:00.0 ===="
+    },
+    {
+      "source_line": 138,
+      "payload": "ARMED trigger=0x02559000 target=0x02669000 OPT_FBIO=0x0000000f active=4,5,6,7,8,9,10,11,12,13,14,15"
+    },
+    {
+      "source_line": 139,
+      "payload": "HIT_NS=18270274777 DELTA_US=2512781 READBACK=0x02669000 CSTATUS=0x00000400 LMR=0x00000308 DEVINIT=0x00000002 REWRITES=4 OPT_FBIO=0x0000000f"
+    },
+    {
+      "source_line": 153,
+      "payload": "CHECK 0000:03:00.0 mem=12288"
+    },
+    {
+      "source_line": 154,
+      "payload": "CMP100_12GB_OK_COUNT=3 / 3"
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+ELF=/LOCAL-USER/cmp100-100/secondary-host/gp100_cfg1_race
+SHA256=a1ca427cb84f3225a5d337ebeaed20cdf1673d6ea7a5ee68a0dacf2bc8d88de6
+EXECUTION=none (static objdump only)
+TOOL=objdump -d -M intel; strings -a -t x
+
+--- PATH / OPEN / MMAP / BAR BASE / 21c14 AND CALLS ---
+    12bc: 48 8b 7b 10                  	mov	rdi, qword ptr [rbx + 0x10]
+    12fc: 4c 8b 4b 08                  	mov	r9, qword ptr [rbx + 0x8]
+    1300: b9 00 01 00 00               	mov	ecx, 0x100
+    1305: ba 02 00 00 00               	mov	edx, 0x2
+    130a: 31 c0                        	xor	eax, eax
+    130c: 48 8d ac 24 50 01 00 00      	lea	rbp, [rsp + 0x150]
+    1314: 4c 8d 05 15 0d 00 00         	lea	r8, [rip + 0xd15]       # 0x2030 <_IO_stdin_used+0x30>
+    131b: be 00 01 00 00               	mov	esi, 0x100
+    1320: 48 89 ef                     	mov	rdi, rbp
+    1323: e8 48 fe ff ff               	call	0x1170 <.plt.sec+0x10>
+    1328: be 02 10 18 00               	mov	esi, 0x181002
+    132d: 48 89 ef                     	mov	rdi, rbp
+    1330: 31 c0                        	xor	eax, eax
+    1332: e8 f9 fe ff ff               	call	0x1230 <.plt.sec+0xd0>
+    1337: 89 44 24 10                  	mov	dword ptr [rsp + 0x10], eax
+    133b: 85 c0                        	test	eax, eax
+    133d: 0f 88 a7 04 00 00            	js	0x17ea <main+0x56a>
+    1343: 8b 7c 24 10                  	mov	edi, dword ptr [rsp + 0x10]
+    1347: 48 8d b4 24 c0 00 00 00      	lea	rsi, [rsp + 0xc0]
+    134f: e8 1c ff ff ff               	call	0x1270 <.plt.sec+0x110>
+    1354: 89 c5                        	mov	ebp, eax
+    1356: 85 c0                        	test	eax, eax
+    1358: 0f 85 e6 01 00 00            	jne	0x1544 <main+0x2c4>
+    135e: 48 81 bc 24 f0 00 00 00 ff ff ff 00  	cmp	qword ptr [rsp + 0xf0], 0xffffff
+    136a: 0f 8e d4 01 00 00            	jle	0x1544 <main+0x2c4>
+    1370: 44 8b 44 24 10               	mov	r8d, dword ptr [rsp + 0x10]
+    1375: 45 31 c9                     	xor	r9d, r9d
+    1378: b9 01 00 00 00               	mov	ecx, 0x1
+    137d: 31 ff                        	xor	edi, edi
+    137f: ba 03 00 00 00               	mov	edx, 0x3
+    1384: be 00 00 00 01               	mov	esi, 0x1000000
+    1389: e8 32 fe ff ff               	call	0x11c0 <.plt.sec+0x60>
+    138e: 48 89 c3                     	mov	rbx, rax
+    1391: 48 83 f8 ff                  	cmp	rax, -0x1
+    1395: 0f 84 7a 04 00 00            	je	0x1815 <main+0x595>
+    139b: 48 8d 54 24 48               	lea	rdx, [rsp + 0x48]
+    13a0: 48 8d 74 24 40               	lea	rsi, [rsp + 0x40]
+    13a5: 89 e8                        	mov	eax, ebp
+    13a7: 45 31 f6                     	xor	r14d, r14d
+    13aa: 48 89 d7                     	mov	rdi, rdx
+    13ad: b9 1e 00 00 00               	mov	ecx, 0x1e
+    13b2: 48 89 f2                     	mov	rdx, rsi
+    13b5: be 80 00 00 00               	mov	esi, 0x80
+    13ba: f3 ab                        	rep		stosd	dword ptr es:[rdi], eax
+    13bc: 31 ff                        	xor	edi, edi
+    13be: 4c 8d 3d 79 0e 00 00         	lea	r15, [rip + 0xe79]      # 0x223e <_IO_stdin_used+0x23e>
+    13c5: 48 c7 44 24 40 01 00 00 00   	mov	qword ptr [rsp + 0x40], 0x1
+    13ce: e8 0d fe ff ff               	call	0x11e0 <.plt.sec+0x80>
+    13d3: bf 03 00 00 00               	mov	edi, 0x3
+    13d8: e8 43 fe ff ff               	call	0x1220 <.plt.sec+0xc0>
+    13dd: 44 89 e1                     	mov	ecx, r12d
+    13e0: ba 00 90 55 02               	mov	edx, 0x2559000
+    13e5: 31 c0                        	xor	eax, eax
+    13e7: 44 8b ab 14 1c 02 00         	mov	r13d, dword ptr [rbx + 0x21c14]
+    13ee: 48 8d 35 63 0c 00 00         	lea	rsi, [rip + 0xc63]      # 0x2058 <_IO_stdin_used+0x58>
+    13f5: bf 02 00 00 00               	mov	edi, 0x2
+    13fa: 45 89 e8                     	mov	r8d, r13d
+    13fd: e8 0e fe ff ff               	call	0x1210 <.plt.sec+0xb0>
+    1402: 66 0f 1f 44 00 00            	nop	word ptr [rax + rax]
+    1454: e8 27 fd ff ff               	call	0x1180 <.plt.sec+0x20>
+    1459: 48 8b 3d c0 2b 00 00         	mov	rdi, qword ptr [rip + 0x2bc0] # 0x4020 <stdout@GLIBC_2.2.5>
+    1460: e8 8b fd ff ff               	call	0x11f0 <.plt.sec+0x90>
+    1465: e8 46 05 00 00               	call	0x19b0 <ns_now>
+    146a: 48 89 44 24 08               	mov	qword ptr [rsp + 0x8], rax
+    146f: 49 01 c7                     	add	r15, rax
+    1472: eb 15                        	jmp	0x1489 <main+0x209>
+    1474: 0f 1f 40 00                  	nop	dword ptr [rax]
+    1478: 8b 83 04 02 9a 00            	mov	eax, dword ptr [rbx + 0x9a0204]
+    147e: 3d 00 90 55 02               	cmp	eax, 0x2559000
+    1483: 0f 84 07 01 00 00            	je	0x1590 <main+0x310>
+    1489: e8 22 05 00 00               	call	0x19b0 <ns_now>
+    148e: 4c 39 f8                     	cmp	rax, r15
+    1491: 72 e5                        	jb	0x1478 <main+0x1f8>
+    1493: 45 89 e9                     	mov	r9d, r13d
+    1496: bf 02 00 00 00               	mov	edi, 0x2
+    149b: 31 c0                        	xor	eax, eax
+    149d: bd 03 00 00 00               	mov	ebp, 0x3
+    14a2: 44 8b 83 0c 24 02 00         	mov	r8d, dword ptr [rbx + 0x2240c]
+    14a9: 8b 8b e0 0c 10 00            	mov	ecx, dword ptr [rbx + 0x100ce0]
+    14af: 48 8d 35 0a 0d 00 00         	lea	rsi, [rip + 0xd0a]      # 0x21c0 <_IO_stdin_used+0x1c0>
+    14b6: 8b 93 04 02 9a 00            	mov	edx, dword ptr [rbx + 0x9a0204]
+    14bc: e8 4f fd ff ff               	call	0x1210 <.plt.sec+0xb0>
+    14c1: be 00 00 00 01               	mov	esi, 0x1000000
+    14c6: 48 89 df                     	mov	rdi, rbx
+    14d9: 48 8b 4b 10                  	mov	rcx, qword ptr [rbx + 0x10]
+    15a0: 45 31 c0                     	xor	r8d, r8d
+    15a3: 31 c9                        	xor	ecx, ecx
+    15a5: 44 89 e2                     	mov	edx, r12d
+    15a8: 44 8b bb 14 1c 02 00         	mov	r15d, dword ptr [rbx + 0x21c14]
+    15af: 48 89 df                     	mov	rdi, rbx
+    15b2: 49 89 c6                     	mov	r14, rax
+    15b5: 44 89 fe                     	mov	esi, r15d
+    15b8: e8 83 03 00 00               	call	0x1940 <plant_active>
+    15bd: eb 26                        	jmp	0x15e5 <main+0x365>
+    15bf: e8 ec 03 00 00               	call	0x19b0 <ns_now>
+    15c4: 4c 29 f0                     	sub	rax, r14
+    15c7: 48 3d 7f f0 fa 02            	cmp	rax, 0x2faf07f
+    15cd: 77 20                        	ja	0x15ef <main+0x36f>
+    15cf: 4d 89 e8                     	mov	r8, r13
+    15d2: b9 01 00 00 00               	mov	ecx, 0x1
+    15d7: 44 89 e2                     	mov	edx, r12d
+    15da: 44 89 fe                     	mov	esi, r15d
+    15dd: 48 89 df                     	mov	rdi, rbx
+    15e0: e8 5b 03 00 00               	call	0x1940 <plant_active>
+    15e5: 8b 83 e0 0c 10 00            	mov	eax, dword ptr [rbx + 0x100ce0]
+    15eb: 85 c0                        	test	eax, eax
+    15ed: 74 d0                        	je	0x15bf <main+0x33f>
+    15ef: 48 8b 4c 24 08               	mov	rcx, qword ptr [rsp + 0x8]
+    15f9: 8b bb 0c 24 02 00            	mov	edi, dword ptr [rbx + 0x2240c]
+    15ff: 8b b3 e0 0c 10 00            	mov	esi, dword ptr [rbx + 0x100ce0]
+    1605: 44 8b 8b 0c 02 9a 00         	mov	r9d, dword ptr [rbx + 0x9a020c]
+    1614: 44 8b 83 04 02 9a 00         	mov	r8d, dword ptr [rbx + 0x9a0204]
+    1650: 8b 83 04 02 9a 00            	mov	eax, dword ptr [rbx + 0x9a0204]
+    1663: 8b 83 0c 02 9a 00            	mov	eax, dword ptr [rbx + 0x9a020c]
+    166d: 8b 83 e0 0c 10 00            	mov	eax, dword ptr [rbx + 0x100ce0]
+    1677: 8b 83 0c 24 02 00            	mov	eax, dword ptr [rbx + 0x2240c]
+    16a0: 44 8b a3 04 02 9a 00         	mov	r12d, dword ptr [rbx + 0x9a0204]
+    16a7: 44 8b ab 0c 02 9a 00         	mov	r13d, dword ptr [rbx + 0x9a020c]
+    16ae: 8b ab e0 0c 10 00            	mov	ebp, dword ptr [rbx + 0x100ce0]
+    16b4: 44 8b bb 0c 24 02 00         	mov	r15d, dword ptr [rbx + 0x2240c]
+    1730: 44 8b 8b 0c 24 02 00         	mov	r9d, dword ptr [rbx + 0x2240c]
+    1737: 44 8b 83 e0 0c 10 00         	mov	r8d, dword ptr [rbx + 0x100ce0]
+    1745: 8b 8b 0c 02 9a 00            	mov	ecx, dword ptr [rbx + 0x9a020c]
+    174b: 8b 93 04 02 9a 00            	mov	edx, dword ptr [rbx + 0x9a0204]
+
+--- COMPLETE plant_active FUNCTION ---
+0000000000001940 <plant_active>:
+    1940: 53                           	push	rbx
+    1941: 41 89 f2                     	mov	r10d, esi
+    1944: 48 89 fb                     	mov	rbx, rdi
+    1947: 41 89 d3                     	mov	r11d, edx
+    194a: be 04 02 90 00               	mov	esi, 0x900204
+    194f: 31 c0                        	xor	eax, eax
+    1951: 83 e1 01                     	and	ecx, 0x1
+    1954: 0f 1f 40 00                  	nop	dword ptr [rax]
+    1958: 41 0f a3 c2                  	bt	r10d, eax
+    195c: 72 31                        	jb	0x198f <plant_active+0x4f>
+    195e: 89 f2                        	mov	edx, esi
+    1960: c1 ea 02                     	shr	edx, 0x2
+    1963: 8d 14 95 00 00 00 00         	lea	edx, [4*rdx]
+    196a: 48 01 da                     	add	rdx, rbx
+    196d: 8b 3a                        	mov	edi, dword ptr [rdx]
+    196f: 81 ff 00 90 55 02            	cmp	edi, 0x2559000
+    1975: 41 0f 95 c1                  	setne	r9b
+    1979: 41 84 c9                     	test	r9b, cl
+    197c: 75 11                        	jne	0x198f <plant_active+0x4f>
+    197e: 44 39 df                     	cmp	edi, r11d
+    1981: 74 0c                        	je	0x198f <plant_active+0x4f>
+    1983: 44 89 1a                     	mov	dword ptr [rdx], r11d
+    1986: 4d 85 c0                     	test	r8, r8
+    1989: 74 04                        	je	0x198f <plant_active+0x4f>
+    198b: 41 83 00 01                  	add	dword ptr [r8], 0x1
+    198f: 83 c0 01                     	add	eax, 0x1
+    1992: 81 c6 00 40 00 00            	add	esi, 0x4000
+    1998: 83 f8 10                     	cmp	eax, 0x10
+    199b: 75 bb                        	jne	0x1958 <plant_active+0x18>
+    199d: f0                           	lock
+    199e: 48 83 0c 24 00               	or	qword ptr [rsp], 0x0
+    19a3: 5b                           	pop	rbx
+    19a4: c3                           	ret
+    19a5: 66 66 2e 0f 1f 84 00 00 00 00 00     	nop	word ptr cs:[rax + rax]
+
+
+--- MEMORY-DESTINATION INSTRUCTION CENSUS (WHOLE DISASSEMBLY) ---
+    12a1: 48 89 84 24 58 02 00 00      	mov	qword ptr [rsp + 0x258], rax
+    12c2: 44 89 00                     	mov	dword ptr [rax], r8d
+    1337: 89 44 24 10                  	mov	dword ptr [rsp + 0x10], eax
+    13ba: f3 ab                        	rep		stosd	dword ptr es:[rdi], eax
+    13c5: 48 c7 44 24 40 01 00 00 00   	mov	qword ptr [rsp + 0x40], 0x1
+    146a: 48 89 44 24 08               	mov	qword ptr [rsp + 0x8], rax
+    1597: 89 7c 24 34                  	mov	dword ptr [rsp + 0x34], edi
+    1656: 44 89 7c 24 28               	mov	dword ptr [rsp + 0x28], r15d
+    165b: 89 6c 24 2c                  	mov	dword ptr [rsp + 0x2c], ebp
+    165f: 89 44 24 08                  	mov	dword ptr [rsp + 0x8], eax
+    1669: 89 44 24 14                  	mov	dword ptr [rsp + 0x14], eax
+    1673: 89 44 24 18                  	mov	dword ptr [rsp + 0x18], eax
+    167d: 89 44 24 1c                  	mov	dword ptr [rsp + 0x1c], eax
+    1688: 48 89 44 24 20               	mov	qword ptr [rsp + 0x20], rax
+    1718: 44 89 7c 24 1c               	mov	dword ptr [rsp + 0x1c], r15d
+    171d: 89 6c 24 18                  	mov	dword ptr [rsp + 0x18], ebp
+    1721: 44 89 6c 24 14               	mov	dword ptr [rsp + 0x14], r13d
+    1726: 44 89 64 24 08               	mov	dword ptr [rsp + 0x8], r12d
+    191c: c6 05 25 27 00 00 01         	mov	byte ptr [rip + 0x2725], 0x1 # 0x4048 <completed.0>
+    1983: 44 89 1a                     	mov	dword ptr [rdx], r11d
+    198b: 41 83 00 01                  	add	dword ptr [r8], 0x1
+    199e: 48 83 0c 24 00               	or	qword ptr [rsp], 0x0
+    19c2: 48 89 44 24 18               	mov	qword ptr [rsp + 0x18], rax
+
+--- RELEVANT STRING TABLE ENTRIES ---
+2030 /sys/bus/pci/devices/%s/resource0
+2058 ARMED trigger=0x%08x target=0x%08x OPT_FBIO=0x%08x active=
+2098 HIT_NS=%lu DELTA_US=%lu READBACK=0x%08x CSTATUS=0x%08x LMR=0x%08x DEVINIT=0x%08x REWRITES=%u OPT_FBIO=0x%08x
+21c0 TIMEOUT CFG1=0x%08x LMR=0x%08x DEVINIT=0x%08x OPT_FBIO=0x%08x
+
+--- CHECKS ---
+main has exactly two dword loads from [rbx+0x21c14]; no direct BAR-base store in main; mask_refs are both loads.
+plant_active receives mapped BAR base in RDI, loops 16 indices from 0x900204 by 0x4000, and conditionally writes R11D to [RDX].
+The helper write target is CFG1 offset 0x900204 + i*0x4000; R11D is the CLI target value.
+The mask test BT R10D,EAX skips set bits; only clear-bit indices reach the CFG1 write checks.
+Whole-disassembly memory-destination candidate count=23; see census above. The BAR-derived destination among them is plant_active [RDX], with RDX formed from mapped RBX plus CFG1 offset.
+Coverage is the exact pinned ELF disassembly and decoded dataflow shown above; no live/device access was performed.

@@ -1,0 +1,102 @@
+{
+  "revision_date": "2026-11-02",
+  "scope": "Offline implementation/review only. No SSH, GPU, helper ELF execution, actual installation, driver/module operation, reset or reboot.",
+  "shell_sha256": "557e9a411056c41184fb04c68542a2b275b42c67680f4cb4636cded7c6f222a0",
+  "embedded_engine_sha256": "7b80e7da8826ca1afb037dbb94f63ce048a90d9b8b1d4eda3af097627cb5e0dd",
+  "checks": [
+    {
+      "command": [
+        "bash",
+        "-n",
+        "unlock/cmp100-12gb.sh"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bash",
+        "unlock/cmp100-12gb.sh",
+        "--help"
+      ],
+      "rc": 0,
+      "stdout": "usage: - [-h] [--check | --apply | --boot | --install-boot | --uninstall-boot]\n         [bdfs ...]\n\nCMP100-100 UNLOCK by 6Robert123; hot --apply tested on two CMPs; mixed-adapter\nhosts and cold boot are not hardware tested.\n\npositional arguments:\n  bdfs              optional domain-qualified CMP BDFs; default all 10de:15c2\n\noptional arguments:\n  -h, --help        show this help message and exit\n  --check           read-only preflight (default); no nvidia-smi\n  --apply           process selected CMPs with NVIDIA core already loaded\n  --boot            boot window; load NVIDIA once if absent, then process CMPs\n  --install-boot    install and enable next-boot entry; never start it now\n  --uninstall-boot  remove this managed boot entry; never stop/reset GPUs\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bash",
+        "unlock/cmp100-12gb.sh",
+        "--check"
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: x86_64 Linux required; no device actions performed\n"
+    }
+  ],
+  "python_ast": "PASS",
+  "embedded_helper_identity": "Pinned SHA unchanged; check_bundle verifies bytes",
+  "multicard_tests": {
+    "command": "python3 -B validation/test_multicard_engine.py",
+    "tests": 26,
+    "result": "PASS",
+    "coverage": [
+      "3 CMP plus P100/other NVIDIA/AMD",
+      "16 CMP mixed host",
+      "selected CMP subset",
+      "one core load for cold path; no module unload",
+      "check does not call SMI/helper/mutation",
+      "first/later target stage failures stop; partial prepare included",
+      "no READY for cleanup/final capacity/protected/final binding failure",
+      "CSV exact BDF and duplicate rejection",
+      "null override normalization and actual Linux cleanup writes newline",
+      "Linux sysfs write allowlist blocks non-target/global writes",
+      "owner inspection errors fail closed",
+      "helper completion during bind",
+      "managed boot plan plus fake-systemctl install/uninstall/partial-enable/removal rollback",
+      "per-BDF and final capacity evidence retained in log",
+      "uninstall remains available with missing runtime GPU tools",
+      "noexec fallback and all-directories-unexecutable refusal before GPU mutation"
+    ]
+  },
+  "release_guard_tests": {
+    "command": "python3 -B validation/test_release_guards.py",
+    "tests": 5,
+    "result": "PASS",
+    "coverage": [
+      "identifier/path fixtures",
+      "redacted allowlist",
+      "validator rejects private field after manifest renewal",
+      "byte-identical repeat ZIP builds"
+    ]
+  },
+  "limitations": [
+    "Fixture tests validate controller/order/selected boundaries, not actual NVIDIA attach/reset/driver behavior.",
+    "Historical global-reload service success does not validate new no-unload sequence.",
+    "Cold driver registration can normally attach previously unbound NVIDIA devices.",
+    "Ambiguous shared GPU clients and shared reset bridges are refused.",
+    "Full VRAM correctness, Gen2 and negotiated x16 are not established.",
+    "Matching source of historical ELF remains missing."
+  ],
+  "total_unittest_methods": 31,
+  "supplied_memory_log": {
+    "audit_command": "python3 -B validation/audit_vram_run.py",
+    "status": "PASS_OFFLINE_LOG_CONSISTENCY",
+    "log_sha256": "0305b9cd6bf4cf9b11c44374e4619c5d3436a2d5122d6cb2f2681463d9929d8f",
+    "checker_source_sha256": "b3e8f8855b719c9f21841f85f76e14250208ca20bf8873dc3cdbc9ab9f84f172",
+    "labeled_runs": 2,
+    "tested_mib_per_run": 11264,
+    "passes_per_run": 2,
+    "reported_failures": 0,
+    "executed_by_release_packager": false,
+    "limits": [
+      "BDFs are operator labels; checker calls CUDA logical device 0 and does not print its PCI ID.",
+      "No launch environment, checker ELF/build receipt or quick-run raw output is included.",
+      "Empty captured Xid section is not proof of full journal coverage.",
+      "11264 MiB allocated range tested; not every physical byte of the NVIDIA-reported 12288 MiB.",
+      "This is supplied runtime evidence, not a new test of the release initializer."
+    ]
+  },
+  "hardware_trial": "hardware_20261102/README.md; separate from these CPU-only checks"
+}

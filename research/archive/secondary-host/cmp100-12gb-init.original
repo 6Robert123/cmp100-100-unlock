@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+# Sequential multi-card OPT_FBIO-aware 12GiB init.
+HELPER=/usr/local/libexec/gp100_cfg1_race
+TARGET=0x02669000
+fail() { echo "CMP100_12GB_FAIL: $*" >&2; exit 1; }
+[[ -x "$HELPER" ]] || fail "missing $HELPER"
+mapfile -t BDFS < <(lspci -Dn 2>/dev/null | awk "/10de:15c2/ {print \$1}")
+[[ ${#BDFS[@]} -gt 0 ]] || fail "no 10de:15c2"
+echo "CMP100_12GB_CARDS=${BDFS[*]}"
+ok=0
+for BDF in "${BDFS[@]}"; do
+  DEV=/sys/bus/pci/devices/$BDF
+  [[ -d "$DEV" ]] || continue
+  echo "==== INIT $BDF ===="
+  if [[ -L "$DEV/driver" ]]; then echo "$BDF" > "$DEV/driver/unbind" || true; fi
+  modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia 2>/dev/null || true
+  echo 1 > "$DEV/reset" || true
+  sleep 0.15
+  setpci -s "${BDF#0000:}" COMMAND=0x0002 >/dev/null 2>&1 || true
+  tmp=$(mktemp /run/cmp100-12gb.XXXXXX)
+  "$HELPER" "$BDF" "$TARGET" >"$tmp" 2>&1 &
+  w=$!
+  sleep 0.25
+  modprobe nvidia
+  wait "$w" || true
+  cat "$tmp"; rm -f "$tmp"
+  mem=""
+  for attempt in 1 2 3 4 5 6 7 8; do
+    sleep 0.5
+    mem=$(nvidia-smi --query-gpu=pci.bus_id,memory.total --format=csv,noheader,nounits 2>/dev/null \
+      | while IFS=, read -r bus m; do
+          bus=${bus// /}; m=${m// /}
+          bus=${bus/#00000000:/0000:}
+          [[ "$bus" == "$BDF" ]] && echo "$m"
+        done | head -1 || true)
+    [[ -n "${mem:-}" ]] && break
+  done
+  echo "CHECK $BDF mem=${mem:-none}"
+  [[ "${mem:-}" == "12288" ]] && ok=$((ok+1))
+done
+echo "CMP100_12GB_OK_COUNT=$ok / ${#BDFS[@]}"
+nvidia-smi --query-gpu=name,uuid,memory.total,pcie.link.gen.current,pcie.link.width.current --format=csv,noheader 2>/dev/null || true
+[[ "$ok" -ge 1 ]] && { echo CMP100_12GB_READY; exit 0; }
+fail "no card reached 12288"

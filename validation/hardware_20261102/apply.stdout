@@ -1,0 +1,29 @@
+READ_ONLY_PREFLIGHT_OK selected=0000:01:00.0,0000:02:00.0
+LOGDIR=/var/log/cmp100-12gb-m6ud1v7e
+EXEC_WORKDIR_OK /var/tmp/cmp100-12gb-y5xjt5_f
+WRITE /sys/bus/pci/devices/0000:01:00.0/driver_override value=cmp100-unlock-hold
+WRITE /sys/bus/pci/devices/0000:01:00.0/reset_method value=bus
+WRITE /sys/bus/pci/drivers/nvidia/unbind value=0000:01:00.0
+WRITE /sys/bus/pci/devices/0000:01:00.0/reset value=1
+WRITE /sys/bus/pci/devices/0000:01:00.0/driver_override value=nvidia
+WRITE /sys/bus/pci/drivers/nvidia/bind value=0000:01:00.0
+CAPACITY 0000:01:00.0 memory_mib=12288
+HELPER_PASS 0000:01:00.0
+CAPACITY 0000:01:00.0 memory_mib=12288
+WRITE /sys/bus/pci/devices/0000:02:00.0/driver_override value=cmp100-unlock-hold
+WRITE /sys/bus/pci/devices/0000:02:00.0/reset_method value=bus
+WRITE /sys/bus/pci/drivers/nvidia/unbind value=0000:02:00.0
+WRITE /sys/bus/pci/devices/0000:02:00.0/reset value=1
+WRITE /sys/bus/pci/devices/0000:02:00.0/driver_override value=nvidia
+WRITE /sys/bus/pci/drivers/nvidia/bind value=0000:02:00.0
+CAPACITY 0000:02:00.0 memory_mib=12288
+HELPER_PASS 0000:02:00.0
+CAPACITY 0000:02:00.0 memory_mib=12288
+CAPACITY 0000:01:00.0 memory_mib=12288
+CAPACITY 0000:02:00.0 memory_mib=12288
+FINAL_CAPACITIES {"0000:01:00.0": 12288, "0000:02:00.0": 12288}
+WRITE /sys/bus/pci/devices/0000:02:00.0/reset_method value=bus
+WRITE /sys/bus/pci/devices/0000:02:00.0/driver_override value=
+WRITE /sys/bus/pci/devices/0000:01:00.0/reset_method value=bus
+WRITE /sys/bus/pci/devices/0000:01:00.0/driver_override value=
+CMP100_12GB_READY count=2

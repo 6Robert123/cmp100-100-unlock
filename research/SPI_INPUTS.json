@@ -1,0 +1,32 @@
+[
+  {
+    "name": "RESTORE_factory_8ae75ee4.bin",
+    "size": 524288,
+    "sha256": "8ae75ee4d1fc28e7c5e42982d16f726f40017b731ac046474e5207e82bb406ba",
+    "distributed": false
+  },
+  {
+    "name": "gen2_cya_lcfg_clear.bin",
+    "size": 524288,
+    "sha256": "e1deeba5c0d3cfb8cac747d02e9ccf397809b8f92688567c67644c4003fe4704",
+    "distributed": false
+  },
+  {
+    "name": "w16_cya.bin",
+    "size": 524288,
+    "sha256": "e2a999a771fd2a835770da71c7b16ed483d541668e3802c459209d0391dbdeec",
+    "distributed": false
+  },
+  {
+    "name": "w16a.bin",
+    "size": 524288,
+    "sha256": "eb13eac83a9364b61a4682a2512ab2c32bf8fbbf4c3cdf67624c3a5dca13742b",
+    "distributed": false
+  },
+  {
+    "name": "w8a.bin",
+    "size": 524288,
+    "sha256": "b0b13b75fc00ff54677b73e01582b2546d879615c55ebd23182adec03c9ea5df",
+    "distributed": false
+  }
+]

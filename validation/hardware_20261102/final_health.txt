@@ -1,0 +1,24 @@
+Nov 02 02:00:41 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Removing device
+Nov 02 02:00:41 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Unloading driver
+Nov 02 02:01:09 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Loading driver
+Nov 02 02:01:10 SECONDARY-HOST kernel: [drm] Initialized nvidia-drm 0.0.0 for 0000:01:00.0 on minor 0
+Nov 02 02:01:10 SECONDARY-HOST kernel: nvidia 0000:01:00.0: [drm] No compatible format found
+Nov 02 02:01:10 SECONDARY-HOST kernel: nvidia 0000:01:00.0: [drm] Cannot find any crtc or sizes
+Nov 02 02:01:58 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Removing device
+Nov 02 02:01:58 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Unloading driver
+Nov 02 02:02:00 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000100] Loading driver
+Nov 02 02:02:00 SECONDARY-HOST kernel: [drm] Initialized nvidia-drm 0.0.0 for 0000:01:00.0 on minor 0
+Nov 02 02:02:00 SECONDARY-HOST kernel: nvidia 0000:01:00.0: [drm] No compatible format found
+Nov 02 02:02:00 SECONDARY-HOST kernel: nvidia 0000:01:00.0: [drm] Cannot find any crtc or sizes
+Nov 02 02:02:02 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000200] Removing device
+Nov 02 02:02:02 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000200] Unloading driver
+Nov 02 02:02:04 SECONDARY-HOST kernel: [drm] [nvidia-drm] [GPU ID 0x00000200] Loading driver
+Nov 02 02:02:04 SECONDARY-HOST kernel: [drm] Initialized nvidia-drm 0.0.0 for 0000:02:00.0 on minor 2
+Nov 02 02:02:04 SECONDARY-HOST kernel: nvidia 0000:02:00.0: [drm] No compatible format found
+Nov 02 02:02:04 SECONDARY-HOST kernel: nvidia 0000:02:00.0: [drm] Cannot find any crtc or sizes
+00000000:01:00.0, 12288, 0, 35, 1, 1
+00000000:02:00.0, 12288, 0, 34, 1, 1
+active
+active
+active
+0

@@ -1,0 +1,35 @@
+{
+  "scope": "Dimensional consistency only; assumes density labels in binary gigabits; not a compatibility test or observation of fitted CMP packages",
+  "source": "/LOCAL-USER/cmp100-100/notes/hbm_height_density_input.txt",
+  "source_sha256": "4e9301980c00fb6522c1ca5eb5e01c93510399ccab577d45586b7d082243ec65",
+  "formula": "stack_GiB = memory_die_count * die_density_Gibits / 8",
+  "combinations": [
+    {
+      "memory_dies_per_stack": 4,
+      "die_density_Gibits": 4,
+      "stack_capacity_GiB": 2.0
+    },
+    {
+      "memory_dies_per_stack": 4,
+      "die_density_Gibits": 8,
+      "stack_capacity_GiB": 4.0
+    },
+    {
+      "memory_dies_per_stack": 8,
+      "die_density_Gibits": 4,
+      "stack_capacity_GiB": 4.0
+    },
+    {
+      "memory_dies_per_stack": 8,
+      "die_density_Gibits": 8,
+      "stack_capacity_GiB": 8.0
+    }
+  ],
+  "attachment_issue": {
+    "line": 22,
+    "text": "| 0x0C | 4 Gb/die × 8 dies = 4 GB (4-Hi) | CMP100 / P100 / V100 16GB |",
+    "finding": "The stated eight memory dies are inconsistent with its own 4-Hi height label. Four GiB by itself is compatible with 4x8-Gib or 8x4-Gib geometry."
+  },
+  "primary_source": "https://images.nvidia.com/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf#page=17",
+  "limits": "NVIDIA gives general HBM2 heights/die densities and initial P100 4-Hi configuration; this does not establish GP100 support for 8GiB/stack, nor physical density/height on CMP."
+}

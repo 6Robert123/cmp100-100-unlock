@@ -1,0 +1,38 @@
+{
+  "audit": "PASS_OFFLINE_LOG_CONSISTENCY",
+  "source_sha256": "b3e8f8855b719c9f21841f85f76e14250208ca20bf8873dc3cdbc9ab9f84f172",
+  "log_sha256": "0305b9cd6bf4cf9b11c44374e4619c5d3436a2d5122d6cb2f2681463d9929d8f",
+  "runs": [
+    {
+      "operator_label": "01:00.0",
+      "cuda_total_mib": 12186,
+      "cuda_free_mib": 11960,
+      "tested_mib": 11264,
+      "passes": 2,
+      "segments": 44,
+      "segment_mib": 256,
+      "progress_rows": 88,
+      "reported_failures": 0,
+      "reported_rc": 0
+    },
+    {
+      "operator_label": "03:00.0",
+      "cuda_total_mib": 12186,
+      "cuda_free_mib": 11960,
+      "tested_mib": 11264,
+      "passes": 2,
+      "segments": 44,
+      "segment_mib": 256,
+      "progress_rows": 88,
+      "reported_failures": 0,
+      "reported_rc": 0
+    }
+  ],
+  "limits": [
+    "BDFs are operator labels; checker calls CUDA logical device 0 and does not print its PCI ID.",
+    "No launch environment, checker ELF/build receipt or quick-run raw output is included.",
+    "Empty captured Xid section is not proof of full journal coverage.",
+    "11264 MiB allocated range tested; not every physical byte of the NVIDIA-reported 12288 MiB.",
+    "This is supplied runtime evidence, not a new test of the release initializer."
+  ]
+}

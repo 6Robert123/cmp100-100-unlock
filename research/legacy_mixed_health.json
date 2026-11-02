@@ -1,0 +1,32 @@
+{
+  "scope": "Historical final health of CMP/P100/CMP; not a new startup test",
+  "source": "evidence_20261022_photo_followup/P100_ID_BOUNDED_REMOTE_20261022/final_health.csv",
+  "source_sha256": "e3758bb4af451e86c9ffe4757cc968eb7972aa9a47f74be82ac1bb1c63530db7",
+  "redaction": "UUID column omitted; topology and measured values retained",
+  "rows": [
+    {
+      "bdf": "0000:01:00.0",
+      "capacity_mib": 12288,
+      "memory_used_mib": 0,
+      "temperature_c": 44,
+      "negotiated_gen": 1,
+      "negotiated_width": 1
+    },
+    {
+      "bdf": "0000:02:00.0",
+      "capacity_mib": 16384,
+      "memory_used_mib": 0,
+      "temperature_c": 47,
+      "negotiated_gen": 3,
+      "negotiated_width": 16
+    },
+    {
+      "bdf": "0000:03:00.0",
+      "capacity_mib": 12288,
+      "memory_used_mib": 0,
+      "temperature_c": 41,
+      "negotiated_gen": 1,
+      "negotiated_width": 1
+    }
+  ]
+}

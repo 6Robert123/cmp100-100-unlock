@@ -1,0 +1,8 @@
+# read-only BAR0 snapshot, 2026-11-01
+# host RESEARCH-HOST, kernel 7.0.0-30-generic, NVIDIA 580.178.04
+# tool: tools/bar0_ro.py (mmap resource0 PROT_READ, no writes)
+# command: sudo -n python3 tools/bar0_ro.py <bdf> 0x8c040 0x88084 0x88088 0x880a4 0x8b8c0 0x8c1c0 0x8841c
+{"bar0_size": 16777216, "bdf": "0000:02:00.0", "values": {"0x88084": "00453c11", "0x88088": "10110140", "0x880a4": "00000002", "0x8841c": "c0b46500", "0x8b8c0": "00640003", "0x8c040": "08089000", "0x8c1c0": "00210036"}}
+{"bar0_size": 16777216, "bdf": "0000:03:00.0", "values": {"0x88084": "00453c11", "0x88088": "10110140", "0x880a4": "00000002", "0x8841c": "c0b46500", "0x8b8c0": "00640003", "0x8c040": "08089000", "0x8c1c0": "00210036"}}
+# note: idle 0x8c040 low five bits = 0, bit4 clear, bit27 set.
+# during the 31.10 command2 trial the same register read 0x80089010: bit31 set, bit4 set, low5 = 0x10.

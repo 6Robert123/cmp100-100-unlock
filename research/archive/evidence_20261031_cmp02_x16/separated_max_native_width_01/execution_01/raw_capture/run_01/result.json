@@ -1,0 +1,1221 @@
+{
+  "actual_mods_pid": 6006,
+  "app_pid": 6004,
+  "app_terminal": true,
+  "argv": [
+    "/usr/bin/bwrap",
+    "--unshare-net",
+    "--unshare-pid",
+    "--unshare-ipc",
+    "--unshare-uts",
+    "--cap-drop",
+    "CAP_SYS_MODULE",
+    "--ro-bind",
+    "/",
+    "/",
+    "--ro-bind",
+    "/sys",
+    "/sys",
+    "--ro-bind",
+    "/run",
+    "/run",
+    "--dev",
+    "/dev",
+    "--dev-bind",
+    "/dev/mods",
+    "/dev/mods",
+    "--proc",
+    "/proc",
+    "--tmpfs",
+    "/proc/bus",
+    "--tmpfs",
+    "/tmp",
+    "--bind",
+    "/var/tmp/cmp02-separated-max-native-width-01/work",
+    "/work",
+    "--setenv",
+    "TMPDIR",
+    "/tmp",
+    "--unsetenv",
+    "LD_LIBRARY_PATH",
+    "--chdir",
+    "/work",
+    "--",
+    "/work/mods",
+    "-mle_nv",
+    "-m",
+    "if(typeof g_CheckVbiosSecurity!==\"boolean\") throw new Error(\"policy type guard\");\ng_CheckVbiosSecurity=false;\n(function(){\n  var x,typ,length=\"unavailable\",count=0,truncated=false;\n  try{x=g_RegWrMask;}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK status=property_exception error=%s\\n\",String(e));return 0;}\n  typ=typeof x;\n  try{if(x!==null && typeof x.length!==\"undefined\")length=String(x.length);}catch(e){length=\"length_exception\";}\n  if(x!==null && (typ===\"object\" || typ===\"function\")){\n    try{for(var k in x){if(count>=256){truncated=true;break;}var v;try{v=x[k];}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s status=read_exception\\n\",String(k));count++;continue;}Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s type=%s value=%s\\n\",String(k),typeof v,(v===null || typeof v===\"string\" || typeof v===\"number\" || typeof v===\"boolean\")?String(v):\"<non_primitive>\");count++;}}\n    catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENUM_EXCEPTION error=%s\\n\",String(e));}\n  }\n  Out.Printf(Out.PriHigh,\"GATED_REGWRMASK type=%s length=%s entries=%d truncated=%s\\n\",typ,length,count,String(truncated));\n  return 0;\n})();\n",
+    "gputest.js",
+    "-notest",
+    "-unlock_aslm",
+    "-run_after_init",
+    "/* Offline candidate only: distinct MAX16 store, stable acceptance check, optional one command2. */\n(function(){\n  var quiet=false,quietRows=[];\n  function emit(row){if(quiet){quietRows.push(row);return;}printRow(row);}\n  function printRow(r){\n    if(r.kind===\"mark\")Out.Printf(Out.PriHigh,\"SEP16 %s\\n\",r.text);\n    else if(r.kind===\"read\")Out.Printf(Out.PriHigh,\"SEP16 READ phase=%s addr=0x%x type=%s value=%s valid=%s\\n\",r.phase,r.a,r.type,r.value,r.valid);\n    else if(r.kind===\"write\")Out.Printf(Out.PriHigh,\"SEP16 WRITE phase=%s addr=0x%x value=0x%x rc=%s status=%s error=%s\\n\",r.phase,r.a,r.v,r.rc,r.status,r.error);\n  }\n  function mark(s){emit({kind:\"mark\",text:s});}\n  function flushQuiet(){quiet=false;for(var k=0;k<quietRows.length;k++)printRow(quietRows[k]);quietRows=[];}\n  function stop(s){if(quiet)flushQuiet();mark(\"STOP reason=\"+s);return 0;}\n  function u32(x){return x>>>0;}\n  function rd(a,phase){\n    try{\n      var raw=s.RegRd32(a),t=typeof raw;\n      var valid=t===\"number\"&&isFinite(raw)&&Math.floor(raw)===raw&&raw>=-2147483648&&raw<=4294967295;\n      var v=valid?u32(raw):0;\n      valid=valid&&v!==0xffffffff;\n      emit({kind:\"read\",phase:phase,a:a,type:t,value:valid?\"0x\"+v.toString(16):String(raw),valid:String(valid)});\n      return valid?{ok:true,v:v}:{ok:false};\n    }catch(e){mark(\"READ_EXCEPTION phase=\"+phase+\" addr=0x\"+a.toString(16)+\" error=\"+String(e));return {ok:false};}\n  }\n  function wr(a,v,phase){\n    var r;\n    try{r=s.RegWr32(a,u32(v));}\n    catch(e){emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:\"unknown\",status:\"exception\",error:String(e)});return false;}\n    var t=typeof r;\n    var ok=(r!==null&&typeof r!==\"undefined\"&&(t===\"number\"||t===\"object\")&&!(r!=OK));\n    emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:String(r),status:ok?\"OK\":\"nonzero_or_invalid_rc\",error:\"none\"});\n    return ok;\n  }\n  function gate(){\n    var f,rc,x;\n    try{f=new InteractiveFile();rc=f.Open(\"/work/probe_gate.txt\");if(rc!=OK)return \"OPEN_ERROR\";x=f.Read();f.Close();}\n    catch(e){try{f.Close();}catch(z){}return \"IO_ERROR\";}\n    if(typeof x!==\"string\")return \"BAD_TYPE\";x=x.replace(/\\n$/ ,\"\");\n    return x===\"WAIT\"||x===\"GO\"||x===\"STOP\"?x:\"BAD_CONTENT\";\n  }\n  function validBdf(x){return x&&Number(x.PciDomainNumber)===0&&Number(x.PciBusNumber)===2&&Number(x.PciDeviceNumber)===0&&Number(x.PciFunctionNumber)===0;}\n  function statusClass(q){\n    if(!q.ok)return \"UNKNOWN\";\n    var st=(q.v>>>16)&0xffff, speed=st&15, width=(st>>>4)&63, training=!!(st&(1<<11));\n    if(speed===1&&width===1&&!training)return \"GEN1_X1\";\n    if(speed===1&&width===16&&!training)return \"GEN1_X16\";\n    return \"OTHER\";\n  }\n  function restoreCya(){\n    var q=rd(0x88150,\"cya29_terminal_precheck\");\n    if(!q.ok)return {ok:false,reason:\"cya_precheck_unknown\"};\n    var target=u32(q.v|0x20000000);\n    if(!wr(0x88150,target,\"cya29_terminal_restore\"))return {ok:false,reason:\"cya_restore_write_failed\"};\n    var rb=rd(0x88150,\"cya29_terminal_readback\");\n    if(!rb.ok||rb.v!==target)return {ok:false,reason:\"cya_restore_readback_mismatch\"};\n    return {ok:true,value:target};\n  }\n  function holdAfterCleanup(result){\n    flushQuiet();\n    if(!result.ok){mark(\"TERMINAL status=CYA_CLEANUP_UNKNOWN reason=\"+result.reason);return 0;}\n    mark(\"CYA_RESTORE status=OK value=0x\"+result.value.toString(16));\n    mark(\"TERMINAL status=CLEANUP_KNOWN\");\n    mark(\"HOLD_BEGIN ms=20000 no_gpu_io=true\");\n    var until=(new Date()).getTime()+20000;\n    while((new Date()).getTime()<until){}\n    mark(\"HOLD_END\");\n    return 0;\n  }\n  function rejectMax(reason){\n    mark(\"MAX_DECISION status=REJECTED reason=\"+reason+\" command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  var s;\n  try{\n    if(Gpu.IsInitialized!==true||GpuDevMgr.IsInitialized!==true||GpuDevMgr.NumGpus!==1)return stop(\"gpu_guard\");\n    s=GpuDevMgr.GetGpuSubdeviceByGpuIdx(0);\n    if(!validBdf(s))return stop(\"exact_bdf\");\n    if(typeof s.RegRd32!==\"function\"||typeof s.RegWr32!==\"function\")return stop(\"register_api_missing\");\n  }catch(e){return stop(\"init_exception:\"+String(e));}\n\n  var q,reads=[\n    [0x88000,0x15c210de,\"gpu_identity\"],\n    [0x88084,0x00453c11,\"initial_link_cap\"],\n    [0x8c040,0x08089000,\"initial_link_word\"],\n    [0x88150,0xe0000195,\"initial_cya\"],\n    [0x8b980,null,\"outerprep_word\"],\n    [0x88088,null,\"initial_link_ctl_sta\"]\n  ];\n  var state={};\n  for(var i=0;i<reads.length;i++){\n    q=rd(reads[i][0],\"baseline_\"+reads[i][2]);\n    if(!q.ok)return stop(\"baseline_unknown_\"+reads[i][2]);\n    state[reads[i][2]]=q.v;\n    if(reads[i][1]!==null&&q.v!==reads[i][1])return stop(\"baseline_mismatch_\"+reads[i][2]);\n  }\n  if((state.outerprep_word&0x00ff0000)!==0)return stop(\"outerprep_bits23_16_not_zero\");\n  if(((state.initial_cya>>>7)&3)!==3)return stop(\"cya_bits7_8_not_both_set\");\n  if(statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"initial_endpoint_not_gen1_x1\");\n  if(gate()!==\"WAIT\")return stop(\"gate_warmup_not_WAIT\");\n  mark(\"WAIT_BEGIN bdf=0000:02:00.0\");\n  var start=(new Date()).getTime(),g=\"TIMEOUT\",n=0;\n  while(n<300&&(new Date()).getTime()-start<30000){\n    g=gate();n++;if(g!==\"WAIT\")break;\n    var until=(new Date()).getTime()+100;while((new Date()).getTime()<until){}\n  }\n  mark(\"GATE decision=\"+g+\" polls=\"+n);if(g!==\"GO\")return stop(\"gate_\"+g);\n  for(var j=0;j<reads.length;j++){\n    q=rd(reads[j][0],\"prewrite_\"+reads[j][2]);\n    if(!q.ok)return stop(\"prewrite_unknown_\"+reads[j][2]);\n    if(reads[j][1]!==null&&q.v!==reads[j][1])return stop(\"prewrite_mismatch_\"+reads[j][2]);\n    state[reads[j][2]]=q.v;\n  }\n  if((state.outerprep_word&0x00ff0000)!==0||((state.initial_cya>>>7)&3)!==3||statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"prewrite_outerprep_cya_or_linkstatus_changed\");\n\n  quiet=true;quietRows=[];\n  var nativeBase=u32(state.initial_link_word&0xff8fffff);\n  if(nativeBase!==0x08089000)return stop(\"native_clear_arithmetic_guard\");\n  if(!wr(0x8c040,nativeBase,\"native_22_20_clear\"))return rejectMax(\"native_clear_write_failed\");\n  q=rd(0x8c040,\"native_22_20_clear_readback\");\n  if(!q.ok||q.v!==nativeBase)return rejectMax(\"native_clear_readback_mismatch\");\n\n  var cyaClear=u32(state.initial_cya&0xdfffffff);\n  if(cyaClear!==0xc0000195)return stop(\"cya_clear_arithmetic_guard\");\n  if(!wr(0x88150,cyaClear,\"cya29_clear\"))return holdAfterCleanup(restoreCya());\n  q=rd(0x88150,\"cya29_clear_readback\");\n  if(!q.ok||q.v!==cyaClear)return holdAfterCleanup(restoreCya());\n\n  var maxTarget=u32((nativeBase&0x07ffffff)|0x80000000);\n  if(maxTarget!==0x80089000)return rejectMax(\"max16_arithmetic_guard\");\n  if(!wr(0x8c040,maxTarget,\"separate_max16_command0\"))return rejectMax(\"max16_write_failed\");\n  q=rd(0x8c040,\"max16_exact_readback\");\n  if(!q.ok||q.v!==maxTarget)return rejectMax(\"max16_exact_readback_rejected\");\n  var cap=rd(0x88084,\"max16_cap_readback\");\n  if(!cap.ok||cap.v!==0x00453d01)return rejectMax(\"max16_linkcap_not_00453d01\");\n\n  var stable=true;\n  for(var p=0;p<3;p++){\n    if(p>0){var waitUntil=(new Date()).getTime()+100;while((new Date()).getTime()<waitUntil){}}\n    var word=rd(0x8c040,\"max16_stability_word_\"+p);\n    var c=rd(0x88084,\"max16_stability_cap_\"+p);\n    if(!word.ok||!c.ok||word.v!==maxTarget||c.v!==0x00453d01)stable=false;\n  }\n  if(!stable)return rejectMax(\"max16_cap_or_word_not_stable\");\n  mark(\"MAX_STABILITY status=PASS pairs=3 min_spacing_ms=100\");\n\n  var link=rd(0x88088,\"post_max_link_ctl_sta\"),linkState=statusClass(link);\n  if(!link.ok){mark(\"MAX_DECISION status=UNKNOWN_LINKSTA command2=SKIPPED\");return holdAfterCleanup(restoreCya());}\n  if(linkState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(linkState!==\"GEN1_X1\")return rejectMax(\"endpoint_not_gen1_x1_after_max\");\n\n  var preWord=rd(0x8c040,\"command2_precheck_word\"),preCap=rd(0x88084,\"command2_precheck_cap\"),preLink=rd(0x88088,\"command2_precheck_link_ctl_sta\");\n  if(!preWord.ok||!preCap.ok||!preLink.ok)return rejectMax(\"command2_precheck_unknown\");\n  if(preCap.v!==0x00453d01||preWord.v!==maxTarget)return rejectMax(\"command2_precheck_max_or_idle_changed\");\n  var lastState=statusClass(preLink);\n  if(lastState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(lastState!==\"GEN1_X1\")return rejectMax(\"command2_precheck_endpoint_not_gen1_x1\");\n  var cmdTarget=u32((preWord.v&0xffffffe0)|2);\n  if(cmdTarget!==0x80089002)return rejectMax(\"command2_arithmetic_guard\");\n  if(!wr(0x8c040,cmdTarget,\"native_command2_once\"))return holdAfterCleanup({ok:false,reason:\"command2_write_failed_state_unknown\"});\n  mark(\"MAX_DECISION status=MAX16_STABLE_ENDPOINT_X1 command2=ISSUED_ONCE\");\n\n  q=rd(0x8c040,\"command2_immediate_readback\");\n  if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_immediate_read_unknown_no_guessed_cleanup\"});\n  var done=(q.v&0x1f)===0,polls=0,deadline=(new Date()).getTime()+4000;\n  while(!done&&(new Date()).getTime()<deadline&&polls<40){\n    var pause=(new Date()).getTime()+100;while((new Date()).getTime()<pause){}\n    q=rd(0x8c040,\"command2_busy_poll_\"+polls);polls++;\n    if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_busy_read_unknown_no_guessed_cleanup\"});\n    done=(q.v&0x1f)===0;\n  }\n  if(done){mark(\"NATIVE_COMMAND status=COMPLETE polls=\"+polls);return holdAfterCleanup(restoreCya());}\n  mark(\"NATIVE_COMMAND status=TIMEOUT polls=\"+polls+\" window_ms=4000\");\n  return holdAfterCleanup(restoreCya());\n})();\n",
+    "-only_pci_dev",
+    "0000:02:00.0"
+  ],
+  "automatic_recovery_performed": false,
+  "baseline_launch_template_sha256": "36b50de98ee7aae021fa94c01271f38361a6a9c5f6326f19f5dea109d38874e7",
+  "boot_id": "UUID-REDACTED",
+  "completed_unix_ns": 1793399397953944691,
+  "cya_cleanup_policy": "single native-equivalent bit29 restore when current word is valid; unknown current word means preserve without guessed write",
+  "extended_validator_sha256": "05e9a069ea6060081ea176324e301005e9f32e0f77742326b405dec249a0c640",
+  "final_signature": {
+    "argv": [
+      "/work/mods",
+      "-mle_nv",
+      "-m",
+      "if(typeof g_CheckVbiosSecurity!==\"boolean\") throw new Error(\"policy type guard\");\ng_CheckVbiosSecurity=false;\n(function(){\n  var x,typ,length=\"unavailable\",count=0,truncated=false;\n  try{x=g_RegWrMask;}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK status=property_exception error=%s\\n\",String(e));return 0;}\n  typ=typeof x;\n  try{if(x!==null && typeof x.length!==\"undefined\")length=String(x.length);}catch(e){length=\"length_exception\";}\n  if(x!==null && (typ===\"object\" || typ===\"function\")){\n    try{for(var k in x){if(count>=256){truncated=true;break;}var v;try{v=x[k];}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s status=read_exception\\n\",String(k));count++;continue;}Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s type=%s value=%s\\n\",String(k),typeof v,(v===null || typeof v===\"string\" || typeof v===\"number\" || typeof v===\"boolean\")?String(v):\"<non_primitive>\");count++;}}\n    catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENUM_EXCEPTION error=%s\\n\",String(e));}\n  }\n  Out.Printf(Out.PriHigh,\"GATED_REGWRMASK type=%s length=%s entries=%d truncated=%s\\n\",typ,length,count,String(truncated));\n  return 0;\n})();\n",
+      "gputest.js",
+      "-notest",
+      "-unlock_aslm",
+      "-run_after_init",
+      "/* Offline candidate only: distinct MAX16 store, stable acceptance check, optional one command2. */\n(function(){\n  var quiet=false,quietRows=[];\n  function emit(row){if(quiet){quietRows.push(row);return;}printRow(row);}\n  function printRow(r){\n    if(r.kind===\"mark\")Out.Printf(Out.PriHigh,\"SEP16 %s\\n\",r.text);\n    else if(r.kind===\"read\")Out.Printf(Out.PriHigh,\"SEP16 READ phase=%s addr=0x%x type=%s value=%s valid=%s\\n\",r.phase,r.a,r.type,r.value,r.valid);\n    else if(r.kind===\"write\")Out.Printf(Out.PriHigh,\"SEP16 WRITE phase=%s addr=0x%x value=0x%x rc=%s status=%s error=%s\\n\",r.phase,r.a,r.v,r.rc,r.status,r.error);\n  }\n  function mark(s){emit({kind:\"mark\",text:s});}\n  function flushQuiet(){quiet=false;for(var k=0;k<quietRows.length;k++)printRow(quietRows[k]);quietRows=[];}\n  function stop(s){if(quiet)flushQuiet();mark(\"STOP reason=\"+s);return 0;}\n  function u32(x){return x>>>0;}\n  function rd(a,phase){\n    try{\n      var raw=s.RegRd32(a),t=typeof raw;\n      var valid=t===\"number\"&&isFinite(raw)&&Math.floor(raw)===raw&&raw>=-2147483648&&raw<=4294967295;\n      var v=valid?u32(raw):0;\n      valid=valid&&v!==0xffffffff;\n      emit({kind:\"read\",phase:phase,a:a,type:t,value:valid?\"0x\"+v.toString(16):String(raw),valid:String(valid)});\n      return valid?{ok:true,v:v}:{ok:false};\n    }catch(e){mark(\"READ_EXCEPTION phase=\"+phase+\" addr=0x\"+a.toString(16)+\" error=\"+String(e));return {ok:false};}\n  }\n  function wr(a,v,phase){\n    var r;\n    try{r=s.RegWr32(a,u32(v));}\n    catch(e){emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:\"unknown\",status:\"exception\",error:String(e)});return false;}\n    var t=typeof r;\n    var ok=(r!==null&&typeof r!==\"undefined\"&&(t===\"number\"||t===\"object\")&&!(r!=OK));\n    emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:String(r),status:ok?\"OK\":\"nonzero_or_invalid_rc\",error:\"none\"});\n    return ok;\n  }\n  function gate(){\n    var f,rc,x;\n    try{f=new InteractiveFile();rc=f.Open(\"/work/probe_gate.txt\");if(rc!=OK)return \"OPEN_ERROR\";x=f.Read();f.Close();}\n    catch(e){try{f.Close();}catch(z){}return \"IO_ERROR\";}\n    if(typeof x!==\"string\")return \"BAD_TYPE\";x=x.replace(/\\n$/ ,\"\");\n    return x===\"WAIT\"||x===\"GO\"||x===\"STOP\"?x:\"BAD_CONTENT\";\n  }\n  function validBdf(x){return x&&Number(x.PciDomainNumber)===0&&Number(x.PciBusNumber)===2&&Number(x.PciDeviceNumber)===0&&Number(x.PciFunctionNumber)===0;}\n  function statusClass(q){\n    if(!q.ok)return \"UNKNOWN\";\n    var st=(q.v>>>16)&0xffff, speed=st&15, width=(st>>>4)&63, training=!!(st&(1<<11));\n    if(speed===1&&width===1&&!training)return \"GEN1_X1\";\n    if(speed===1&&width===16&&!training)return \"GEN1_X16\";\n    return \"OTHER\";\n  }\n  function restoreCya(){\n    var q=rd(0x88150,\"cya29_terminal_precheck\");\n    if(!q.ok)return {ok:false,reason:\"cya_precheck_unknown\"};\n    var target=u32(q.v|0x20000000);\n    if(!wr(0x88150,target,\"cya29_terminal_restore\"))return {ok:false,reason:\"cya_restore_write_failed\"};\n    var rb=rd(0x88150,\"cya29_terminal_readback\");\n    if(!rb.ok||rb.v!==target)return {ok:false,reason:\"cya_restore_readback_mismatch\"};\n    return {ok:true,value:target};\n  }\n  function holdAfterCleanup(result){\n    flushQuiet();\n    if(!result.ok){mark(\"TERMINAL status=CYA_CLEANUP_UNKNOWN reason=\"+result.reason);return 0;}\n    mark(\"CYA_RESTORE status=OK value=0x\"+result.value.toString(16));\n    mark(\"TERMINAL status=CLEANUP_KNOWN\");\n    mark(\"HOLD_BEGIN ms=20000 no_gpu_io=true\");\n    var until=(new Date()).getTime()+20000;\n    while((new Date()).getTime()<until){}\n    mark(\"HOLD_END\");\n    return 0;\n  }\n  function rejectMax(reason){\n    mark(\"MAX_DECISION status=REJECTED reason=\"+reason+\" command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  var s;\n  try{\n    if(Gpu.IsInitialized!==true||GpuDevMgr.IsInitialized!==true||GpuDevMgr.NumGpus!==1)return stop(\"gpu_guard\");\n    s=GpuDevMgr.GetGpuSubdeviceByGpuIdx(0);\n    if(!validBdf(s))return stop(\"exact_bdf\");\n    if(typeof s.RegRd32!==\"function\"||typeof s.RegWr32!==\"function\")return stop(\"register_api_missing\");\n  }catch(e){return stop(\"init_exception:\"+String(e));}\n\n  var q,reads=[\n    [0x88000,0x15c210de,\"gpu_identity\"],\n    [0x88084,0x00453c11,\"initial_link_cap\"],\n    [0x8c040,0x08089000,\"initial_link_word\"],\n    [0x88150,0xe0000195,\"initial_cya\"],\n    [0x8b980,null,\"outerprep_word\"],\n    [0x88088,null,\"initial_link_ctl_sta\"]\n  ];\n  var state={};\n  for(var i=0;i<reads.length;i++){\n    q=rd(reads[i][0],\"baseline_\"+reads[i][2]);\n    if(!q.ok)return stop(\"baseline_unknown_\"+reads[i][2]);\n    state[reads[i][2]]=q.v;\n    if(reads[i][1]!==null&&q.v!==reads[i][1])return stop(\"baseline_mismatch_\"+reads[i][2]);\n  }\n  if((state.outerprep_word&0x00ff0000)!==0)return stop(\"outerprep_bits23_16_not_zero\");\n  if(((state.initial_cya>>>7)&3)!==3)return stop(\"cya_bits7_8_not_both_set\");\n  if(statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"initial_endpoint_not_gen1_x1\");\n  if(gate()!==\"WAIT\")return stop(\"gate_warmup_not_WAIT\");\n  mark(\"WAIT_BEGIN bdf=0000:02:00.0\");\n  var start=(new Date()).getTime(),g=\"TIMEOUT\",n=0;\n  while(n<300&&(new Date()).getTime()-start<30000){\n    g=gate();n++;if(g!==\"WAIT\")break;\n    var until=(new Date()).getTime()+100;while((new Date()).getTime()<until){}\n  }\n  mark(\"GATE decision=\"+g+\" polls=\"+n);if(g!==\"GO\")return stop(\"gate_\"+g);\n  for(var j=0;j<reads.length;j++){\n    q=rd(reads[j][0],\"prewrite_\"+reads[j][2]);\n    if(!q.ok)return stop(\"prewrite_unknown_\"+reads[j][2]);\n    if(reads[j][1]!==null&&q.v!==reads[j][1])return stop(\"prewrite_mismatch_\"+reads[j][2]);\n    state[reads[j][2]]=q.v;\n  }\n  if((state.outerprep_word&0x00ff0000)!==0||((state.initial_cya>>>7)&3)!==3||statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"prewrite_outerprep_cya_or_linkstatus_changed\");\n\n  quiet=true;quietRows=[];\n  var nativeBase=u32(state.initial_link_word&0xff8fffff);\n  if(nativeBase!==0x08089000)return stop(\"native_clear_arithmetic_guard\");\n  if(!wr(0x8c040,nativeBase,\"native_22_20_clear\"))return rejectMax(\"native_clear_write_failed\");\n  q=rd(0x8c040,\"native_22_20_clear_readback\");\n  if(!q.ok||q.v!==nativeBase)return rejectMax(\"native_clear_readback_mismatch\");\n\n  var cyaClear=u32(state.initial_cya&0xdfffffff);\n  if(cyaClear!==0xc0000195)return stop(\"cya_clear_arithmetic_guard\");\n  if(!wr(0x88150,cyaClear,\"cya29_clear\"))return holdAfterCleanup(restoreCya());\n  q=rd(0x88150,\"cya29_clear_readback\");\n  if(!q.ok||q.v!==cyaClear)return holdAfterCleanup(restoreCya());\n\n  var maxTarget=u32((nativeBase&0x07ffffff)|0x80000000);\n  if(maxTarget!==0x80089000)return rejectMax(\"max16_arithmetic_guard\");\n  if(!wr(0x8c040,maxTarget,\"separate_max16_command0\"))return rejectMax(\"max16_write_failed\");\n  q=rd(0x8c040,\"max16_exact_readback\");\n  if(!q.ok||q.v!==maxTarget)return rejectMax(\"max16_exact_readback_rejected\");\n  var cap=rd(0x88084,\"max16_cap_readback\");\n  if(!cap.ok||cap.v!==0x00453d01)return rejectMax(\"max16_linkcap_not_00453d01\");\n\n  var stable=true;\n  for(var p=0;p<3;p++){\n    if(p>0){var waitUntil=(new Date()).getTime()+100;while((new Date()).getTime()<waitUntil){}}\n    var word=rd(0x8c040,\"max16_stability_word_\"+p);\n    var c=rd(0x88084,\"max16_stability_cap_\"+p);\n    if(!word.ok||!c.ok||word.v!==maxTarget||c.v!==0x00453d01)stable=false;\n  }\n  if(!stable)return rejectMax(\"max16_cap_or_word_not_stable\");\n  mark(\"MAX_STABILITY status=PASS pairs=3 min_spacing_ms=100\");\n\n  var link=rd(0x88088,\"post_max_link_ctl_sta\"),linkState=statusClass(link);\n  if(!link.ok){mark(\"MAX_DECISION status=UNKNOWN_LINKSTA command2=SKIPPED\");return holdAfterCleanup(restoreCya());}\n  if(linkState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(linkState!==\"GEN1_X1\")return rejectMax(\"endpoint_not_gen1_x1_after_max\");\n\n  var preWord=rd(0x8c040,\"command2_precheck_word\"),preCap=rd(0x88084,\"command2_precheck_cap\"),preLink=rd(0x88088,\"command2_precheck_link_ctl_sta\");\n  if(!preWord.ok||!preCap.ok||!preLink.ok)return rejectMax(\"command2_precheck_unknown\");\n  if(preCap.v!==0x00453d01||preWord.v!==maxTarget)return rejectMax(\"command2_precheck_max_or_idle_changed\");\n  var lastState=statusClass(preLink);\n  if(lastState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(lastState!==\"GEN1_X1\")return rejectMax(\"command2_precheck_endpoint_not_gen1_x1\");\n  var cmdTarget=u32((preWord.v&0xffffffe0)|2);\n  if(cmdTarget!==0x80089002)return rejectMax(\"command2_arithmetic_guard\");\n  if(!wr(0x8c040,cmdTarget,\"native_command2_once\"))return holdAfterCleanup({ok:false,reason:\"command2_write_failed_state_unknown\"});\n  mark(\"MAX_DECISION status=MAX16_STABLE_ENDPOINT_X1 command2=ISSUED_ONCE\");\n\n  q=rd(0x8c040,\"command2_immediate_readback\");\n  if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_immediate_read_unknown_no_guessed_cleanup\"});\n  var done=(q.v&0x1f)===0,polls=0,deadline=(new Date()).getTime()+4000;\n  while(!done&&(new Date()).getTime()<deadline&&polls<40){\n    var pause=(new Date()).getTime()+100;while((new Date()).getTime()<pause){}\n    q=rd(0x8c040,\"command2_busy_poll_\"+polls);polls++;\n    if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_busy_read_unknown_no_guessed_cleanup\"});\n    done=(q.v&0x1f)===0;\n  }\n  if(done){mark(\"NATIVE_COMMAND status=COMPLETE polls=\"+polls);return holdAfterCleanup(restoreCya());}\n  mark(\"NATIVE_COMMAND status=TIMEOUT polls=\"+polls+\" window_ms=4000\");\n  return holdAfterCleanup(restoreCya());\n})();\n",
+      "-only_pci_dev",
+      "0000:02:00.0"
+    ],
+    "bar_base": "0x7466bdbbb000",
+    "bif_a35": [
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "boot": "UUID-REDACTED",
+    "candidate_count": 5,
+    "descriptor": "0x32689e90",
+    "flags": {
+      "0x11f0": 1,
+      "0x11f1": 1,
+      "0x1fb2": 0,
+      "0xcec": 1
+    },
+    "frontend": "0x32cc9de0",
+    "manager": "0x31c96cf0",
+    "mask_begin": "0x0",
+    "mask_count": 0,
+    "mask_end": "0x0",
+    "native_instances": [
+      [
+        "0x32f2eb90",
+        "0x32f2eb98",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x33183060",
+        "0x33183068",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x332a4a70",
+        "0x332a4a78",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x333dd410",
+        "0x333dd418",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x33418230",
+        "0x33418238",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ]
+    ],
+    "pid": 6006,
+    "selector": "0x0",
+    "start": 204310,
+    "translation_root": "0x0",
+    "unique_bif": [
+      "0x7466c1a9a0d0"
+    ],
+    "unique_gpu": [
+      "0x32cdb340"
+    ],
+    "vector_begin": "0x321f5aa0",
+    "vector_end": "0x321f5aa8",
+    "vector_length": 1,
+    "vptr": "0x4bdffe0"
+  },
+  "final_validation_file": "validate_cpu_snapshot_final.json",
+  "first_signature": {
+    "argv": [
+      "/work/mods",
+      "-mle_nv",
+      "-m",
+      "if(typeof g_CheckVbiosSecurity!==\"boolean\") throw new Error(\"policy type guard\");\ng_CheckVbiosSecurity=false;\n(function(){\n  var x,typ,length=\"unavailable\",count=0,truncated=false;\n  try{x=g_RegWrMask;}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK status=property_exception error=%s\\n\",String(e));return 0;}\n  typ=typeof x;\n  try{if(x!==null && typeof x.length!==\"undefined\")length=String(x.length);}catch(e){length=\"length_exception\";}\n  if(x!==null && (typ===\"object\" || typ===\"function\")){\n    try{for(var k in x){if(count>=256){truncated=true;break;}var v;try{v=x[k];}catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s status=read_exception\\n\",String(k));count++;continue;}Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENTRY key=%s type=%s value=%s\\n\",String(k),typeof v,(v===null || typeof v===\"string\" || typeof v===\"number\" || typeof v===\"boolean\")?String(v):\"<non_primitive>\");count++;}}\n    catch(e){Out.Printf(Out.PriHigh,\"GATED_REGWRMASK_ENUM_EXCEPTION error=%s\\n\",String(e));}\n  }\n  Out.Printf(Out.PriHigh,\"GATED_REGWRMASK type=%s length=%s entries=%d truncated=%s\\n\",typ,length,count,String(truncated));\n  return 0;\n})();\n",
+      "gputest.js",
+      "-notest",
+      "-unlock_aslm",
+      "-run_after_init",
+      "/* Offline candidate only: distinct MAX16 store, stable acceptance check, optional one command2. */\n(function(){\n  var quiet=false,quietRows=[];\n  function emit(row){if(quiet){quietRows.push(row);return;}printRow(row);}\n  function printRow(r){\n    if(r.kind===\"mark\")Out.Printf(Out.PriHigh,\"SEP16 %s\\n\",r.text);\n    else if(r.kind===\"read\")Out.Printf(Out.PriHigh,\"SEP16 READ phase=%s addr=0x%x type=%s value=%s valid=%s\\n\",r.phase,r.a,r.type,r.value,r.valid);\n    else if(r.kind===\"write\")Out.Printf(Out.PriHigh,\"SEP16 WRITE phase=%s addr=0x%x value=0x%x rc=%s status=%s error=%s\\n\",r.phase,r.a,r.v,r.rc,r.status,r.error);\n  }\n  function mark(s){emit({kind:\"mark\",text:s});}\n  function flushQuiet(){quiet=false;for(var k=0;k<quietRows.length;k++)printRow(quietRows[k]);quietRows=[];}\n  function stop(s){if(quiet)flushQuiet();mark(\"STOP reason=\"+s);return 0;}\n  function u32(x){return x>>>0;}\n  function rd(a,phase){\n    try{\n      var raw=s.RegRd32(a),t=typeof raw;\n      var valid=t===\"number\"&&isFinite(raw)&&Math.floor(raw)===raw&&raw>=-2147483648&&raw<=4294967295;\n      var v=valid?u32(raw):0;\n      valid=valid&&v!==0xffffffff;\n      emit({kind:\"read\",phase:phase,a:a,type:t,value:valid?\"0x\"+v.toString(16):String(raw),valid:String(valid)});\n      return valid?{ok:true,v:v}:{ok:false};\n    }catch(e){mark(\"READ_EXCEPTION phase=\"+phase+\" addr=0x\"+a.toString(16)+\" error=\"+String(e));return {ok:false};}\n  }\n  function wr(a,v,phase){\n    var r;\n    try{r=s.RegWr32(a,u32(v));}\n    catch(e){emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:\"unknown\",status:\"exception\",error:String(e)});return false;}\n    var t=typeof r;\n    var ok=(r!==null&&typeof r!==\"undefined\"&&(t===\"number\"||t===\"object\")&&!(r!=OK));\n    emit({kind:\"write\",phase:phase,a:a,v:u32(v),rc:String(r),status:ok?\"OK\":\"nonzero_or_invalid_rc\",error:\"none\"});\n    return ok;\n  }\n  function gate(){\n    var f,rc,x;\n    try{f=new InteractiveFile();rc=f.Open(\"/work/probe_gate.txt\");if(rc!=OK)return \"OPEN_ERROR\";x=f.Read();f.Close();}\n    catch(e){try{f.Close();}catch(z){}return \"IO_ERROR\";}\n    if(typeof x!==\"string\")return \"BAD_TYPE\";x=x.replace(/\\n$/ ,\"\");\n    return x===\"WAIT\"||x===\"GO\"||x===\"STOP\"?x:\"BAD_CONTENT\";\n  }\n  function validBdf(x){return x&&Number(x.PciDomainNumber)===0&&Number(x.PciBusNumber)===2&&Number(x.PciDeviceNumber)===0&&Number(x.PciFunctionNumber)===0;}\n  function statusClass(q){\n    if(!q.ok)return \"UNKNOWN\";\n    var st=(q.v>>>16)&0xffff, speed=st&15, width=(st>>>4)&63, training=!!(st&(1<<11));\n    if(speed===1&&width===1&&!training)return \"GEN1_X1\";\n    if(speed===1&&width===16&&!training)return \"GEN1_X16\";\n    return \"OTHER\";\n  }\n  function restoreCya(){\n    var q=rd(0x88150,\"cya29_terminal_precheck\");\n    if(!q.ok)return {ok:false,reason:\"cya_precheck_unknown\"};\n    var target=u32(q.v|0x20000000);\n    if(!wr(0x88150,target,\"cya29_terminal_restore\"))return {ok:false,reason:\"cya_restore_write_failed\"};\n    var rb=rd(0x88150,\"cya29_terminal_readback\");\n    if(!rb.ok||rb.v!==target)return {ok:false,reason:\"cya_restore_readback_mismatch\"};\n    return {ok:true,value:target};\n  }\n  function holdAfterCleanup(result){\n    flushQuiet();\n    if(!result.ok){mark(\"TERMINAL status=CYA_CLEANUP_UNKNOWN reason=\"+result.reason);return 0;}\n    mark(\"CYA_RESTORE status=OK value=0x\"+result.value.toString(16));\n    mark(\"TERMINAL status=CLEANUP_KNOWN\");\n    mark(\"HOLD_BEGIN ms=20000 no_gpu_io=true\");\n    var until=(new Date()).getTime()+20000;\n    while((new Date()).getTime()<until){}\n    mark(\"HOLD_END\");\n    return 0;\n  }\n  function rejectMax(reason){\n    mark(\"MAX_DECISION status=REJECTED reason=\"+reason+\" command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  var s;\n  try{\n    if(Gpu.IsInitialized!==true||GpuDevMgr.IsInitialized!==true||GpuDevMgr.NumGpus!==1)return stop(\"gpu_guard\");\n    s=GpuDevMgr.GetGpuSubdeviceByGpuIdx(0);\n    if(!validBdf(s))return stop(\"exact_bdf\");\n    if(typeof s.RegRd32!==\"function\"||typeof s.RegWr32!==\"function\")return stop(\"register_api_missing\");\n  }catch(e){return stop(\"init_exception:\"+String(e));}\n\n  var q,reads=[\n    [0x88000,0x15c210de,\"gpu_identity\"],\n    [0x88084,0x00453c11,\"initial_link_cap\"],\n    [0x8c040,0x08089000,\"initial_link_word\"],\n    [0x88150,0xe0000195,\"initial_cya\"],\n    [0x8b980,null,\"outerprep_word\"],\n    [0x88088,null,\"initial_link_ctl_sta\"]\n  ];\n  var state={};\n  for(var i=0;i<reads.length;i++){\n    q=rd(reads[i][0],\"baseline_\"+reads[i][2]);\n    if(!q.ok)return stop(\"baseline_unknown_\"+reads[i][2]);\n    state[reads[i][2]]=q.v;\n    if(reads[i][1]!==null&&q.v!==reads[i][1])return stop(\"baseline_mismatch_\"+reads[i][2]);\n  }\n  if((state.outerprep_word&0x00ff0000)!==0)return stop(\"outerprep_bits23_16_not_zero\");\n  if(((state.initial_cya>>>7)&3)!==3)return stop(\"cya_bits7_8_not_both_set\");\n  if(statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"initial_endpoint_not_gen1_x1\");\n  if(gate()!==\"WAIT\")return stop(\"gate_warmup_not_WAIT\");\n  mark(\"WAIT_BEGIN bdf=0000:02:00.0\");\n  var start=(new Date()).getTime(),g=\"TIMEOUT\",n=0;\n  while(n<300&&(new Date()).getTime()-start<30000){\n    g=gate();n++;if(g!==\"WAIT\")break;\n    var until=(new Date()).getTime()+100;while((new Date()).getTime()<until){}\n  }\n  mark(\"GATE decision=\"+g+\" polls=\"+n);if(g!==\"GO\")return stop(\"gate_\"+g);\n  for(var j=0;j<reads.length;j++){\n    q=rd(reads[j][0],\"prewrite_\"+reads[j][2]);\n    if(!q.ok)return stop(\"prewrite_unknown_\"+reads[j][2]);\n    if(reads[j][1]!==null&&q.v!==reads[j][1])return stop(\"prewrite_mismatch_\"+reads[j][2]);\n    state[reads[j][2]]=q.v;\n  }\n  if((state.outerprep_word&0x00ff0000)!==0||((state.initial_cya>>>7)&3)!==3||statusClass({ok:true,v:state.initial_link_ctl_sta})!==\"GEN1_X1\")return stop(\"prewrite_outerprep_cya_or_linkstatus_changed\");\n\n  quiet=true;quietRows=[];\n  var nativeBase=u32(state.initial_link_word&0xff8fffff);\n  if(nativeBase!==0x08089000)return stop(\"native_clear_arithmetic_guard\");\n  if(!wr(0x8c040,nativeBase,\"native_22_20_clear\"))return rejectMax(\"native_clear_write_failed\");\n  q=rd(0x8c040,\"native_22_20_clear_readback\");\n  if(!q.ok||q.v!==nativeBase)return rejectMax(\"native_clear_readback_mismatch\");\n\n  var cyaClear=u32(state.initial_cya&0xdfffffff);\n  if(cyaClear!==0xc0000195)return stop(\"cya_clear_arithmetic_guard\");\n  if(!wr(0x88150,cyaClear,\"cya29_clear\"))return holdAfterCleanup(restoreCya());\n  q=rd(0x88150,\"cya29_clear_readback\");\n  if(!q.ok||q.v!==cyaClear)return holdAfterCleanup(restoreCya());\n\n  var maxTarget=u32((nativeBase&0x07ffffff)|0x80000000);\n  if(maxTarget!==0x80089000)return rejectMax(\"max16_arithmetic_guard\");\n  if(!wr(0x8c040,maxTarget,\"separate_max16_command0\"))return rejectMax(\"max16_write_failed\");\n  q=rd(0x8c040,\"max16_exact_readback\");\n  if(!q.ok||q.v!==maxTarget)return rejectMax(\"max16_exact_readback_rejected\");\n  var cap=rd(0x88084,\"max16_cap_readback\");\n  if(!cap.ok||cap.v!==0x00453d01)return rejectMax(\"max16_linkcap_not_00453d01\");\n\n  var stable=true;\n  for(var p=0;p<3;p++){\n    if(p>0){var waitUntil=(new Date()).getTime()+100;while((new Date()).getTime()<waitUntil){}}\n    var word=rd(0x8c040,\"max16_stability_word_\"+p);\n    var c=rd(0x88084,\"max16_stability_cap_\"+p);\n    if(!word.ok||!c.ok||word.v!==maxTarget||c.v!==0x00453d01)stable=false;\n  }\n  if(!stable)return rejectMax(\"max16_cap_or_word_not_stable\");\n  mark(\"MAX_STABILITY status=PASS pairs=3 min_spacing_ms=100\");\n\n  var link=rd(0x88088,\"post_max_link_ctl_sta\"),linkState=statusClass(link);\n  if(!link.ok){mark(\"MAX_DECISION status=UNKNOWN_LINKSTA command2=SKIPPED\");return holdAfterCleanup(restoreCya());}\n  if(linkState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(linkState!==\"GEN1_X1\")return rejectMax(\"endpoint_not_gen1_x1_after_max\");\n\n  var preWord=rd(0x8c040,\"command2_precheck_word\"),preCap=rd(0x88084,\"command2_precheck_cap\"),preLink=rd(0x88088,\"command2_precheck_link_ctl_sta\");\n  if(!preWord.ok||!preCap.ok||!preLink.ok)return rejectMax(\"command2_precheck_unknown\");\n  if(preCap.v!==0x00453d01||preWord.v!==maxTarget)return rejectMax(\"command2_precheck_max_or_idle_changed\");\n  var lastState=statusClass(preLink);\n  if(lastState===\"GEN1_X16\"){\n    mark(\"MAX_DECISION status=EP_ALREADY_GEN1_X16 command2=SKIPPED\");\n    return holdAfterCleanup(restoreCya());\n  }\n  if(lastState!==\"GEN1_X1\")return rejectMax(\"command2_precheck_endpoint_not_gen1_x1\");\n  var cmdTarget=u32((preWord.v&0xffffffe0)|2);\n  if(cmdTarget!==0x80089002)return rejectMax(\"command2_arithmetic_guard\");\n  if(!wr(0x8c040,cmdTarget,\"native_command2_once\"))return holdAfterCleanup({ok:false,reason:\"command2_write_failed_state_unknown\"});\n  mark(\"MAX_DECISION status=MAX16_STABLE_ENDPOINT_X1 command2=ISSUED_ONCE\");\n\n  q=rd(0x8c040,\"command2_immediate_readback\");\n  if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_immediate_read_unknown_no_guessed_cleanup\"});\n  var done=(q.v&0x1f)===0,polls=0,deadline=(new Date()).getTime()+4000;\n  while(!done&&(new Date()).getTime()<deadline&&polls<40){\n    var pause=(new Date()).getTime()+100;while((new Date()).getTime()<pause){}\n    q=rd(0x8c040,\"command2_busy_poll_\"+polls);polls++;\n    if(!q.ok)return holdAfterCleanup({ok:false,reason:\"command2_busy_read_unknown_no_guessed_cleanup\"});\n    done=(q.v&0x1f)===0;\n  }\n  if(done){mark(\"NATIVE_COMMAND status=COMPLETE polls=\"+polls);return holdAfterCleanup(restoreCya());}\n  mark(\"NATIVE_COMMAND status=TIMEOUT polls=\"+polls+\" window_ms=4000\");\n  return holdAfterCleanup(restoreCya());\n})();\n",
+      "-only_pci_dev",
+      "0000:02:00.0"
+    ],
+    "bar_base": "0x7466bdbbb000",
+    "bif_a35": [
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0"
+    ],
+    "boot": "UUID-REDACTED",
+    "candidate_count": 5,
+    "descriptor": "0x32689e90",
+    "flags": {
+      "0x11f0": 1,
+      "0x11f1": 1,
+      "0x1fb2": 0,
+      "0xcec": 1
+    },
+    "frontend": "0x32cc9de0",
+    "manager": "0x31c96cf0",
+    "mask_begin": "0x0",
+    "mask_count": 0,
+    "mask_end": "0x0",
+    "native_instances": [
+      [
+        "0x32f2eb90",
+        "0x32f2eb98",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x33183060",
+        "0x33183068",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x332a4a70",
+        "0x332a4a78",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x333dd410",
+        "0x333dd418",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ],
+      [
+        "0x33418230",
+        "0x33418238",
+        "40b3cd3200000000",
+        "0x32cdb340",
+        "d0a0a9c166740000",
+        "0x7466c1a9a0d0",
+        [
+          [
+            "0x0",
+            "0x5c5eec0",
+            "0x5c5eec0",
+            true
+          ],
+          [
+            "0x10",
+            "0x5c5ee40",
+            "0x5c5ee40",
+            true
+          ],
+          [
+            "0x18",
+            "0x5c5ee80",
+            "0x5c5ee80",
+            true
+          ],
+          [
+            "0x20",
+            "0x5c5eea0",
+            "0x5c5eea0",
+            true
+          ],
+          [
+            "0x2c0",
+            "0x5c5ede0",
+            "0x5c5ede0",
+            true
+          ],
+          [
+            "0x2c8",
+            "0x5c5ee00",
+            "0x5c5ee00",
+            true
+          ],
+          [
+            "0x8",
+            "0x5c5ee20",
+            "0x5c5ee20",
+            true
+          ],
+          [
+            "0xf8",
+            "0x5c5ee60",
+            "0x5c5ee60",
+            true
+          ]
+        ]
+      ]
+    ],
+    "pid": 6006,
+    "selector": "0x0",
+    "start": 204310,
+    "translation_root": "0x0",
+    "unique_bif": [
+      "0x7466c1a9a0d0"
+    ],
+    "unique_gpu": [
+      "0x32cdb340"
+    ],
+    "vector_begin": "0x321f5aa0",
+    "vector_end": "0x321f5aa8",
+    "vector_length": 1,
+    "vptr": "0x4bdffe0"
+  },
+  "first_validation_file": "validate_cpu_snapshot_first.json",
+  "fresh_post_trial_x16_linksta": {
+    "age_seconds": 0.280006722,
+    "sample": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453d01",
+        "link_sta_raw": "0x1011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2133001080549,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:29:57.669394+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "valid": false
+  },
+  "fuser_after": "",
+  "g_RegWrMask_empty_observed": true,
+  "gate_file": "/var/tmp/cmp02-separated-max-native-width-01/work/probe_gate.txt",
+  "gate_initial_content": "WAIT\\n",
+  "gate_token": "GO",
+  "gdb_pids_after": [],
+  "go_unix_ns": 1793399311273285300,
+  "handoff_helper_sha256": "2a34d5e28ed931621e35411b9732cc40c543eb1b791e892545fe3881847b65f5",
+  "handoff_state_path": "/var/tmp/cmp02-mods520112-metadata-handoff-vr4gaq__/state.json",
+  "handoff_state_phase": "MODS520112_METADATA_HANDOFF_READY",
+  "hook_evidence": {
+    "cleanup_unknown_count": 0,
+    "command2_write_count": 1,
+    "cya29_restore_write_count": 1,
+    "cya_restored": true,
+    "expected_write_order": true,
+    "hold_begin_count": 1,
+    "hold_complete": true,
+    "hold_end_count": 1,
+    "max16_cap_readback": true,
+    "max16_exact_readback": true,
+    "max16_stable_three_pairs": true,
+    "max_decision": "MAX16_STABLE_ENDPOINT_X1",
+    "max_decision_lines": [
+      "SEP16 MAX_DECISION status=MAX16_STABLE_ENDPOINT_X1 command2=ISSUED_ONCE"
+    ],
+    "native_command_result": "TIMEOUT",
+    "no_high_rollback": true,
+    "parsed_write_rows": [
+      {
+        "fields": [
+          "native_22_20_clear",
+          "0x8c040",
+          "0x8089000",
+          "0",
+          "OK"
+        ],
+        "line": "SEP16 WRITE phase=native_22_20_clear addr=0x8c040 value=0x8089000 rc=0 status=OK error=none"
+      },
+      {
+        "fields": [
+          "cya29_clear",
+          "0x88150",
+          "0xc0000195",
+          "0",
+          "OK"
+        ],
+        "line": "SEP16 WRITE phase=cya29_clear addr=0x88150 value=0xc0000195 rc=0 status=OK error=none"
+      },
+      {
+        "fields": [
+          "separate_max16_command0",
+          "0x8c040",
+          "0x80089000",
+          "0",
+          "OK"
+        ],
+        "line": "SEP16 WRITE phase=separate_max16_command0 addr=0x8c040 value=0x80089000 rc=0 status=OK error=none"
+      },
+      {
+        "fields": [
+          "native_command2_once",
+          "0x8c040",
+          "0x80089002",
+          "0",
+          "OK"
+        ],
+        "line": "SEP16 WRITE phase=native_command2_once addr=0x8c040 value=0x80089002 rc=0 status=OK error=none"
+      },
+      {
+        "fields": [
+          "cya29_terminal_restore",
+          "0x88150",
+          "0xe0000195",
+          "0",
+          "OK"
+        ],
+        "line": "SEP16 WRITE phase=cya29_terminal_restore addr=0x88150 value=0xe0000195 rc=0 status=OK error=none"
+      }
+    ],
+    "read_line_count": 69,
+    "read_lines": [
+      "SEP16 READ phase=baseline_gpu_identity addr=0x88000 type=number value=0x15c210de valid=true",
+      "SEP16 READ phase=baseline_initial_link_cap addr=0x88084 type=number value=0x453c11 valid=true",
+      "SEP16 READ phase=baseline_initial_link_word addr=0x8c040 type=number value=0x8089000 valid=true",
+      "SEP16 READ phase=baseline_initial_cya addr=0x88150 type=number value=0xe0000195 valid=true",
+      "SEP16 READ phase=baseline_outerprep_word addr=0x8b980 type=number value=0x200a043 valid=true",
+      "SEP16 READ phase=baseline_initial_link_ctl_sta addr=0x88088 type=number value=0x10110142 valid=true",
+      "SEP16 READ phase=prewrite_gpu_identity addr=0x88000 type=number value=0x15c210de valid=true",
+      "SEP16 READ phase=prewrite_initial_link_cap addr=0x88084 type=number value=0x453c11 valid=true",
+      "SEP16 READ phase=prewrite_initial_link_word addr=0x8c040 type=number value=0x8089000 valid=true",
+      "SEP16 READ phase=prewrite_initial_cya addr=0x88150 type=number value=0xe0000195 valid=true",
+      "SEP16 READ phase=prewrite_outerprep_word addr=0x8b980 type=number value=0x200a043 valid=true",
+      "SEP16 READ phase=prewrite_initial_link_ctl_sta addr=0x88088 type=number value=0x10110142 valid=true",
+      "SEP16 READ phase=native_22_20_clear_readback addr=0x8c040 type=number value=0x8089000 valid=true",
+      "SEP16 READ phase=cya29_clear_readback addr=0x88150 type=number value=0xc0000195 valid=true",
+      "SEP16 READ phase=max16_exact_readback addr=0x8c040 type=number value=0x80089000 valid=true",
+      "SEP16 READ phase=max16_cap_readback addr=0x88084 type=number value=0x453d01 valid=true",
+      "SEP16 READ phase=max16_stability_word_0 addr=0x8c040 type=number value=0x80089000 valid=true",
+      "SEP16 READ phase=max16_stability_cap_0 addr=0x88084 type=number value=0x453d01 valid=true",
+      "SEP16 READ phase=max16_stability_word_1 addr=0x8c040 type=number value=0x80089000 valid=true",
+      "SEP16 READ phase=max16_stability_cap_1 addr=0x88084 type=number value=0x453d01 valid=true",
+      "SEP16 READ phase=max16_stability_word_2 addr=0x8c040 type=number value=0x80089000 valid=true",
+      "SEP16 READ phase=max16_stability_cap_2 addr=0x88084 type=number value=0x453d01 valid=true",
+      "SEP16 READ phase=post_max_link_ctl_sta addr=0x88088 type=number value=0x10110142 valid=true",
+      "SEP16 READ phase=command2_precheck_word addr=0x8c040 type=number value=0x80089000 valid=true",
+      "SEP16 READ phase=command2_precheck_cap addr=0x88084 type=number value=0x453d01 valid=true",
+      "SEP16 READ phase=command2_precheck_link_ctl_sta addr=0x88088 type=number value=0x10110142 valid=true",
+      "SEP16 READ phase=command2_immediate_readback addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_0 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_1 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_2 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_3 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_4 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_5 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_6 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_7 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_8 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_9 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_10 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_11 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_12 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_13 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_14 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_15 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_16 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_17 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_18 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_19 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_20 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_21 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_22 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_23 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_24 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_25 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_26 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_27 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_28 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_29 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_30 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_31 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_32 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_33 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_34 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_35 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_36 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_37 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_38 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=command2_busy_poll_39 addr=0x8c040 type=number value=0x80089010 valid=true",
+      "SEP16 READ phase=cya29_terminal_precheck addr=0x88150 type=number value=0xc0000195 valid=true",
+      "SEP16 READ phase=cya29_terminal_readback addr=0x88150 type=number value=0xe0000195 valid=true"
+    ],
+    "safe_terminal_sequence": true,
+    "separate_max16_write_count": 1,
+    "stop_lines": [],
+    "stop_marker_count": 0,
+    "write_line_count": 5,
+    "write_lines": [
+      "SEP16 WRITE phase=native_22_20_clear addr=0x8c040 value=0x8089000 rc=0 status=OK error=none",
+      "SEP16 WRITE phase=cya29_clear addr=0x88150 value=0xc0000195 rc=0 status=OK error=none",
+      "SEP16 WRITE phase=separate_max16_command0 addr=0x8c040 value=0x80089000 rc=0 status=OK error=none",
+      "SEP16 WRITE phase=native_command2_once addr=0x8c040 value=0x80089002 rc=0 status=OK error=none",
+      "SEP16 WRITE phase=cya29_terminal_restore addr=0x88150 value=0xe0000195 rc=0 status=OK error=none"
+    ]
+  },
+  "hook_sha256": "0fc723a9a01895de82f69837cb0cb995217129caa0928c9976393ac20e3b3f37",
+  "launcher_sha256": "69d4d10ad2c53260af91f7337e5849cf5664b877d393ce82a1540c6452920652",
+  "link_gate": {
+    "age_seconds": 0.186961469,
+    "endpoint_root": {
+      "endpoint": {
+        "cap": "0x00453c11",
+        "dll_active": null,
+        "dll_reporting": false,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP"
+      },
+      "rootport": {
+        "cap": "0x007a7903",
+        "dll_active": true,
+        "dll_reporting": true,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP"
+      }
+    },
+    "sample": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453c11",
+        "link_sta_raw": "0x1011",
+        "max_width": 1,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2046347033045,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:28:31.016342+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "valid": true
+  },
+  "linksta_rc": 0,
+  "manifest_sha256": "95e0ee8085a85a6ea91ed3b73660c31edfd8a1088eb4027495d169dc9a70a40e",
+  "mods_module_refcnt": "0",
+  "mods_pids_after": [],
+  "mods_rc": 1,
+  "mods_sha256": "9aaef3ecdfb0cee492628ed211675283292fa6d2206efa808b5fcab0cb407ec6",
+  "next_recovery_branch": "x1/failure: parent review actual terminal receipt; recovery decision remains parent-only",
+  "no_retry_second_request_reset_root_retrain_or_high_rollback": true,
+  "observer_pid": 6003,
+  "observer_rc": 0,
+  "observer_sha256": "192cf124df409c1cf28ae9a52069b0576d76c444cf209269af5e0e75e55b501a",
+  "outerprep_source_writes_emulated": false,
+  "physical_gen1_x16_accepted": false,
+  "physical_gen1_x16_observed": false,
+  "pid_start_ticks_initial": 204310,
+  "post_cleanup_hold_begin_host_monotonic_ns": 2050873156062,
+  "post_cleanup_hold_end_host_monotonic_ns": 2070875168626,
+  "post_cleanup_hold_linksta": {
+    "all_rows_link_up_no_training": true,
+    "first_row": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453d01",
+        "link_sta_raw": "0x1011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2050948394153,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:28:35.618485+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "hold_span_seconds": 20.002012564,
+    "last_row": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453d01",
+        "link_sta_raw": "0x1011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2070758186447,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:28:55.428292+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "paired_rows_in_hold": 100,
+    "valid": true
+  },
+  "post_cleanup_hold_x16_linksta": {
+    "all_rows_both_gen1_x16": false,
+    "all_rows_link_up_no_training": true,
+    "first_row": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453d01",
+        "link_sta_raw": "0x1011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2050948394153,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:28:35.618485+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "hold_span_seconds": 20.002012564,
+    "last_row": {
+      "app_process_start": null,
+      "boot_id": "UUID-REDACTED",
+      "endpoint": {
+        "dll_active": null,
+        "dll_active_reporting_capable": false,
+        "link_cap_raw": "0x00453d01",
+        "link_sta_raw": "0x1011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "endpoint_bdf": "0000:02:00.0",
+      "monotonic_ns": 2070758186447,
+      "observer_pid": 6003,
+      "rootport": {
+        "dll_active": true,
+        "dll_active_reporting_capable": true,
+        "link_cap_raw": "0x007a7903",
+        "link_sta_raw": "0x3011",
+        "max_width": 16,
+        "negotiated_width": 1,
+        "speed_code": 1,
+        "status": "LINK_UP",
+        "training": false
+      },
+      "rootport_bdf": "0000:00:02.0",
+      "utc": "2026-10-30T22:28:55.428292+00:00",
+      "vendors": {
+        "0000:00:02.0": "0x8086",
+        "0000:02:00.0": "0x10de"
+      }
+    },
+    "paired_rows_in_hold": 100,
+    "valid": false
+  },
+  "preamble_sha256": "998ad39134585f53f87e850d3be55197aa59b79d46622c1597a09fe326fd4964",
+  "public_set_pcie_link_width_called_or_claimed": false,
+  "register_sequence_hypothesis_only": [
+    {
+      "address": "0x8c040",
+      "phase": "native 22:20 clear",
+      "value": "0x08089000"
+    },
+    {
+      "address": "0x88150",
+      "phase": "CYA29 clear",
+      "value": "0xc0000195"
+    },
+    {
+      "address": "0x8c040",
+      "phase": "separate MAX16 command0; exact readback and cap/stability required",
+      "value": "0x80089000"
+    },
+    {
+      "address": "0x8c040",
+      "phase": "at most one command2 after stable MAX16 and endpoint still x1",
+      "value": "0x80089002"
+    },
+    {
+      "address": "0x88150",
+      "phase": "one source-equivalent terminal CYA restore after valid completion/timeout or pre-command rejection",
+      "value": "runtime current word OR bit29"
+    }
+  ],
+  "runner_sha256": "69d4d10ad2c53260af91f7337e5849cf5664b877d393ce82a1540c6452920652",
+  "same_pid_final_snapshot_map_boot_identity_validated": true,
+  "scanner_sha256": "979db5ffc7b088cb8076f4bfe912bd2af9651bc24cea0ca63bccc85d50dcedfe",
+  "spc_sha256": "50724081383b3b07b604cea12bc31dfcd58c27818d29b5e09bd0f5396089ddb7",
+  "status": "NATIVE_COMMAND_TIMEOUT_CYA_CLEANUP_REQUIRES_REVIEW",
+  "strict_predicate_passed": true,
+  "target": "0000:02:00.0",
+  "validator_sha256": "d62f71d452630d55c1fbaf29a761e69f46894f349feddfc714577a026581edf1",
+  "workcopy_manifest_sha256_reverified_after_handoff": "95e0ee8085a85a6ea91ed3b73660c31edfd8a1088eb4027495d169dc9a70a40e"
+}

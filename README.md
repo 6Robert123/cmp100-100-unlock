@@ -49,7 +49,7 @@ Default targets are all `10de:15c2`; optional BDFs select a subset. P100, other 
 
 During `--boot`, a missing NVIDIA core may be loaded once; normal driver registration may attach other previously unbound NVIDIA devices. Already bound non-target bindings must remain unchanged. No reset/helper is directed to those other devices. [Full instructions and limits](unlock/README.md).
 
-**A fresh two-CMP hot `--apply` hardware trial passed on 2 November 2026: both cards changed from 6144 to 12288 MiB, exit 0.** [Exact script, logs, initial noexec failure and coverage limits](validation/hardware_20261102/README.md). Mixed NVIDIA hosts and cold boot remain hardware-unvalidated. The archived service worked on the research host, but used a different global unload/reload loop. Its success is not a hardware test of this release. The exact matching source of the embedded historical ELF is still missing; `.legacy.c` is a different implementation. [Details](docs/MEMORY_12GIB.md).
+**A fresh two-CMP hot `--apply` hardware trial passed on 2 November 2026: both cards changed from 6144 to 12288 MiB, exit 0.** [Exact script, logs, initial noexec failure and coverage limits](validation/hardware_20261102/README.md). Mixed NVIDIA hosts and cold boot remain hardware-unvalidated. The archived service worked on the research host, but used a different global unload/reload loop. Its success is not a hardware test of this release. The source of the embedded helper is now published: [`gp100_cfg1_race_optfbio.c`](unlock/historical/gp100_cfg1_race_optfbio.c). Its functions, constants and output strings match the shipped ELF; build it yourself with `gcc -O2 -o gp100_cfg1_race gp100_cfg1_race_optfbio.c`. Byte-identical output needs the original toolchain (GCC 13.3, Ubuntu 24.04). `.legacy.c` is an older, different implementation. [Details](docs/MEMORY_12GIB.md).
 
 ## What the evidence supports
 
@@ -71,7 +71,7 @@ Run `python3 tools/check_bundle.py` to verify hashes, embedded helper identity a
 
 ## Research discussions
 
-Discussion priorities are the missing helper source provenance, full-capacity VRAM validation, and the GP100 link-training path. Original code contributions are welcome under MIT. See [CONTRIBUTING.md](CONTRIBUTING.md). Please include failed trials and restoration status as well as successful output.
+Discussion priorities are a reproducible build of the helper, full-capacity VRAM validation, and the GP100 link-training path. Original code contributions are welcome under MIT. See [CONTRIBUTING.md](CONTRIBUTING.md). Please include failed trials and restoration status as well as successful output.
 
 Original project code and documentation are licensed under [MIT](LICENSE), copyright 2026 **6Robert123**. Historical archive and embedded-helper exclusions are described in [NOTICE.md](NOTICE.md).
 

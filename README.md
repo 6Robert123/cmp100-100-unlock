@@ -1,4 +1,4 @@
-# 🔓 CMP 100-100 UNLOCK
+# 🔓 NVIDIA CMP 100-100 12GB unlock (GP100, Linux)
 
 
 **12 GiB on Linux · Help finish Gen2 & x16**

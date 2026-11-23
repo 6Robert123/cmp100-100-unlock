@@ -9,3 +9,7 @@ __pycache__/
 .env.*
 logs/
 run-logs/
+
+# Stock VBIOS dumps are published on purpose
+!vbios/*.bin
+!vbios/*.rom

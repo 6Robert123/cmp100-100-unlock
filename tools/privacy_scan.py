@@ -39,6 +39,7 @@ def scan_tree(root):
   if OLD_HOST.lower() in rel.lower():findings.append((rel,0,'old_host_path'))
   if p.is_symlink():findings.append((rel,0,'symlink_not_reviewed'));continue
   if not p.is_file():continue
+  if rel.startswith('vbios/') and rel.endswith(('.bin','.rom')):continue  # stock VBIOS references, reviewed; serials kept on purpose
   if rel.startswith('docs/photos/') and rel.endswith('.jpg'):
    b=p.read_bytes()
    if b'Exif' in b[:4096] or b'GPS' in b[:4096] or b'\xff\xe1' in b[:4096]:findings.append((rel,0,'photo_metadata_present'))
